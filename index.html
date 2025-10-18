@@ -1,189 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Oakridge Nuclear Power Plant – Tools</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auto Bypass & Paycheck System</title>
+
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
+    /* Full-page parallax background */
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: url('https://i.ibb.co/N2Jq1f9Z/image.png') center/cover no-repeat fixed;
-      color: #ddd;
-      line-height:1.5;
+      margin: 0;
       min-height: 100vh;
+      background: url("https://i.ibb.co/N2Jq1f9Z/image.png") center/cover fixed no-repeat;
+      color: #ddd;
       display: flex;
       justify-content: center;
-      align-items: start;
-      padding: 20px;
+      align-items: flex-start;
+      padding: 40px 20px;
     }
+
+    /* Transparent container overlay */
     .container {
       width: 100%;
       max-width: 700px;
-      background: rgba(26,26,26,0.85);
-      border: 1px solid #2e2e2e;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
+      border: 1px solid #333;
+      backdrop-filter: blur(6px);
+      padding: 25px;
+      position: relative;
+      z-index: 2;
     }
-    header {
-      background: url('https://i.ibb.co/xt8Nx27x/image-2025-10-18-114854726.png') center/cover no-repeat;
-      padding: 80px 20px;
+
+    h1, h2 {
       text-align: center;
-      color: #aad400;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      margin-top: 0;
+      color: #c7ff1f;
     }
-    header h1 {
-      font-size: 2.8em;
-      margin-bottom: 0.2em;
-    }
-    header p {
-      font-size: 1.1em;
-      opacity: 0.8;
-    }
-    main {
-      padding: 30px 20px;
-    }
-    section {
-      margin-bottom: 40px;
-    }
-    h2 {
-      color: #aad400;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #2e2e2e;
-      padding-bottom: 8px;
-    }
-    .field {
-      margin: 16px 0;
-    }
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 1.1em;
-      color: #ccc;
-    }
-    input[type="number"] {
+
+    input, button {
       width: 100%;
-      padding: 12px 14px;
-      font-size: 1em;
-      border: 2px solid #444;
+      padding: 10px;
+      margin: 8px 0;
       border-radius: 6px;
-      background: #2c2c2c;
-      color: #eee;
-      transition: border 0.3s;
-    }
-    input[type="number"]:focus {
-      border: 2px solid #aad400;
-      outline: none;
-    }
-    button {
-      padding: 14px 28px;
-      font-size: 1em;
       border: none;
-      border-radius: 6px;
-      background: #aad400;
-      color: #1a1a1a;
+      outline: none;
+      font-size: 16px;
+    }
+
+    input {
+      background-color: #1e1e1e;
+      color: #ddd;
+      border: 1px solid #333;
+    }
+
+    button {
+      background-color: #a8ff00;
+      color: #000;
+      font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      transition: background 0.3s, transform 0.2s;
+      transition: 0.2s;
     }
+
     button:hover {
-      background: #8bbc00;
-      transform: translateY(-2px);
+      background-color: #c7ff1f;
     }
+
     .result {
-      margin-top: 20px;
-      padding: 16px;
-      background: #242424;
-      border: 1px solid #3a3a3a;
+      margin-top: 10px;
+      background-color: #222;
+      padding: 10px;
       border-radius: 6px;
-      font-size: 1.2em;
-      color: #aad400;
-      display: none;
-      animation: fadeIn 0.4s ease-in;
+      text-align: center;
+      color: #c7ff1f;
+      border: 1px solid #333;
     }
-    @keyframes fadeIn {
-      from { opacity:0; transform: translateY(10px); }
-      to   { opacity:1; transform: translateY(0); }
-    }
+
     footer {
       text-align: center;
-      padding: 20px;
+      margin-top: 30px;
       font-size: 0.9em;
-      color: #777;
-      background: #151515;
-    }
-    @media (max-width: 600px) {
-      header {
-        padding: 60px 10px;
-      }
-      button {
-        width: 100%;
-      }
+      opacity: 0.8;
+      color: #aaa;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>Oakridge Nuclear Power Plant Tools</h1>
-      <p>Utility panel for Auto Bypass & Paycheck calculation</p>
-    </header>
-    <main>
-      <section id="bypassSection">
-        <h2>Auto Bypass Calculator</h2>
-        <div class="field">
-          <label for="inputNumber">Enter bypass number:</label>
-          <input type="number" id="inputNumber" placeholder="e.g. 100">
-        </div>
-        <button id="calcBypassBtn">Calculate Bypass</button>
-        <div id="bypassResult" class="result"></div>
-      </section>
+    <h1>Auto Bypass Calculator</h1>
+    <label>Enter bypass number:</label>
+    <input type="number" id="bypassInput" placeholder="e.g. 1190">
+    <button onclick="calculateBypass()">Calculate Bypass</button>
+    <div id="bypassResult" class="result"></div>
 
-      <section id="paycheckSection">
-        <h2>Paycheck System</h2>
-        <div class="field">
-          <label for="inputHours">Enter your hours (or value):</label>
-          <input type="number" id="inputHours" placeholder="e.g. 8">
-        </div>
-        <div class="field">
-          <label for="inputRate">Enter your rate per hour:</label>
-          <input type="number" id="inputRate" placeholder="e.g. 10">
-        </div>
-        <button id="calcPaycheckBtn">Calculate Paycheck</button>
-        <div id="paycheckResult" class="result"></div>
-      </section>
-    </main>
-    <footer>
-      Developed for the Oakridge community • © 2025
-    </footer>
+    <hr style="margin: 25px 0; border: 1px solid #333;">
+
+    <h2>Paycheck System</h2>
+    <label>Enter your hours (or value):</label>
+    <input type="number" id="hoursInput" placeholder="e.g. 8">
+    <label>Enter your rate per hour:</label>
+    <input type="number" id="rateInput" placeholder="e.g. 10">
+    <button onclick="calculatePaycheck()">Calculate Paycheck</button>
+    <div id="paycheckResult" class="result"></div>
+
+    <footer>© 2025 | Made by MightyBlakemcawesome</footer>
   </div>
 
   <script>
-    document.getElementById('calcBypassBtn').addEventListener('click', function(){
-      const num = parseFloat(document.getElementById('inputNumber').value);
-      if (isNaN(num)) {
-        alert('Please enter a valid number for the bypass calculation.');
-        return;
-      }
-      const bypass = (num / 2) + 12;
-      const resultDiv = document.getElementById('bypassResult');
-      resultDiv.style.display = 'block';
-      resultDiv.innerText = 'Auto Bypass Value = ' + bypass.toFixed(2);
-    });
+    function calculateBypass() {
+      const input = parseFloat(document.getElementById("bypassInput").value);
+      const resultDiv = document.getElementById("bypassResult");
 
-    document.getElementById('calcPaycheckBtn').addEventListener('click', function(){
-      const hours = parseFloat(document.getElementById('inputHours').value);
-      const rate  = parseFloat(document.getElementById('inputRate').value);
-      if (isNaN(hours) || isNaN(rate)) {
-        alert('Please enter valid values for hours and rate.');
+      if (isNaN(input)) {
+        resultDiv.textContent = "Please enter a valid number.";
         return;
       }
+
+      const bypassValue = input * 0.51;
+      resultDiv.textContent = `Auto Bypass Value = ${bypassValue.toFixed(2)}`;
+    }
+
+    function calculatePaycheck() {
+      const hours = parseFloat(document.getElementById("hoursInput").value);
+      const rate = parseFloat(document.getElementById("rateInput").value);
+      const resultDiv = document.getElementById("paycheckResult");
+
+      if (isNaN(hours) || isNaN(rate)) {
+        resultDiv.textContent = "Please enter valid numbers.";
+        return;
+      }
+
       const paycheck = hours * rate;
-      const resultDiv = document.getElementById('paycheckResult');
-      resultDiv.style.display = 'block';
-      resultDiv.innerText = 'Paycheck = ' + paycheck.toFixed(2);
-    });
+      resultDiv.textContent = `Total Paycheck = ${paycheck.toFixed(2)}`;
+    }
   </script>
 </body>
 </html>
+
