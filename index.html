@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Oakridge Nuclear Power Plant – Tools</title>
   <style>
-    /* RESET */
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: #111;
+      background: url('https://i.ibb.co/N2Jq1f9Z/image.png') center/cover no-repeat fixed;
       color: #ddd;
       line-height:1.5;
       min-height: 100vh;
@@ -21,14 +20,13 @@
     .container {
       width: 100%;
       max-width: 700px;
-      background: #1a1a1a;
+      background: rgba(26,26,26,0.85);
       border: 1px solid #2e2e2e;
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 8px 24px rgba(0,0,0,0.7);
     }
     header {
-      /* Using linked image as background */
       background: url('https://i.ibb.co/xt8Nx27x/image-2025-10-18-114854726.png') center/cover no-repeat;
       padding: 80px 20px;
       text-align: center;
@@ -108,21 +106,6 @@
       from { opacity:0; transform: translateY(10px); }
       to   { opacity:1; transform: translateY(0); }
     }
-    .aside-image {
-      text-align: center;
-      margin: 40px 0;
-    }
-    .aside-image img {
-      width: 100%;
-      max-width: 300px;
-      border: 2px solid #444;
-      border-radius: 8px;
-      transition: border-color 0.3s, transform 0.2s;
-    }
-    .aside-image img:hover {
-      border-color: #aad400;
-      transform: scale(1.03);
-    }
     footer {
       text-align: center;
       padding: 20px;
@@ -136,9 +119,6 @@
       }
       button {
         width: 100%;
-      }
-      .aside-image img {
-        max-width: 100%;
       }
     }
   </style>
@@ -173,11 +153,6 @@
         <button id="calcPaycheckBtn">Calculate Paycheck</button>
         <div id="paycheckResult" class="result"></div>
       </section>
-
-      <div class="aside-image">
-        <!-- second linked image used here -->
-        <img src="https://i.ibb.co/N2Jq1f9Z/image.png" alt="Decorative image">
-      </div>
     </main>
     <footer>
       Developed for the Oakridge community • © 2025
@@ -185,7 +160,6 @@
   </div>
 
   <script>
-    // Auto bypass calculation (formula: number / 2 + 12)
     document.getElementById('calcBypassBtn').addEventListener('click', function(){
       const num = parseFloat(document.getElementById('inputNumber').value);
       if (isNaN(num)) {
@@ -198,7 +172,6 @@
       resultDiv.innerText = 'Auto Bypass Value = ' + bypass.toFixed(2);
     });
 
-    // Paycheck calculation
     document.getElementById('calcPaycheckBtn').addEventListener('click', function(){
       const hours = parseFloat(document.getElementById('inputHours').value);
       const rate  = parseFloat(document.getElementById('inputRate').value);
