@@ -83,7 +83,6 @@
   </div>
 
   <script>
-    // Chart init
     const ctx = document.getElementById('effChart');
     const effChart = new Chart(ctx, {
       type: 'line',
@@ -92,32 +91,37 @@
     });
 
     function calcDemand(){
-      const d = parseFloat(document.getElementById('demandInput').value);
+      const d = parseFloat(demandInput.value);
       if(isNaN(d)) return alert('Enter a valid number');
       const result = d/2 + 12;
-      document.getElementById('demandResult').textContent = `Demand Value = ${result.toFixed(2)}`;
+      demandResult.textContent = `Demand Value = ${result.toFixed(2)}`;
     }
 
     function calcPay(){
-      const h = parseFloat(document.getElementById('hoursInput').value);
-      const r = parseFloat(document.getElementById('rateInput').value);
+      const h = parseFloat(hoursInput.value);
+      const r = parseFloat(rateInput.value);
       if(isNaN(h)||isNaN(r)) return alert('Enter valid numbers');
       const pay = h*r;
-      document.getElementById('payResult').textContent = `Total Paycheck = ${pay.toFixed(2)}`;
+      payResult.textContent = `Total Paycheck = ${pay.toFixed(2)}`;
     }
 
+    // --- Efficiency Calculations ---
     function Pw(P){ return (2*P)/3; }
     function Ow(O){ return (107*O)/100; }
+
+    // Smooth limiter that doesn't fully zero out below threshold
     function PL(Pw){
       const t=(Pw-1600)/500;
       if(t>1) return 1;
-      if(t>=0) return t;
-      return 0;
+      if(t>0) return t; 
+      return Math.max(0.05 + t*0.05, 0.02); // smooth low end (~2%-5%)
     }
+
     function E(Ow,Pw,C){
       const pl = PL(Pw);
-      if(Pw-1600===0||C===0) return 0;
-      return pl*(65*(Ow/(Pw-1600)) + 35*(77*((Ow/4570)+0.65)/C));
+      if(Pw <= 1600 || C <= 0) return pl * 0.5;
+      const numerator = (65*(Ow/(Pw-1600))) + (35*(77*((Ow/4570)+0.65)/C));
+      return pl * numerator * 100; // multiplied to scale to %
     }
 
     function calcEfficiency(){
@@ -127,7 +131,7 @@
       const Pw_val=Pw(P), Ow_val=Ow(O);
       const eff=E(Ow_val,Pw_val,C);
       effResult.textContent=`Reactor Efficiency = ${eff.toFixed(3)}%`;
-      document.getElementById('effFill').style.width=Math.min(100,eff)+"%";
+      effFill.style.width=Math.min(100,eff)+"%";
 
       // Plot graph
       const data=[], labels=[];
@@ -142,3 +146,4 @@
   </script>
 </body>
 </html>
+
