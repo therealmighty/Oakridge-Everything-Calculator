@@ -1,149 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Oakridge Systems | Demand · Paycheck · Efficiency</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oakridge NPP Calculators</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
     body {
       margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      color: #eee;
-      background: url("https://i.ibb.co/N2Jq1f9Z/image.png") center/cover fixed no-repeat;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 30px;
-      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      background-image: url('https://i.ibb.co/N2Jq1f9Z/image.png');
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+      backdrop-filter: brightness(0.5);
     }
+
+    header {
+      text-align: center;
+      padding: 50px 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    header h1 {
+      font-size: 2.2em;
+      margin-bottom: 10px;
+      color: #4af3ff;
+    }
+
     .container {
-      width: 95%;
-      max-width: 950px;
-      background: rgba(0, 0, 0, 0.85);
+      background-color: rgba(0, 0, 0, 0.75);
+      max-width: 800px;
+      margin: 40px auto;
       border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-      backdrop-filter: blur(6px);
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
     }
-    h1 { color: #aaff00; text-align: center; margin-bottom: 20px; }
-    h2 { color: #aaff00; margin-top: 20px; font-size: 1.2rem; }
-    label { display: block; margin-top: 8px; }
+
+    h2 {
+      text-align: center;
+      color: #50c8ff;
+    }
+
+    label, input {
+      display: block;
+      margin: 10px auto;
+      text-align: center;
+    }
+
     input {
-      width: 100%; padding: 8px;
-      background: #111; border: 1px solid #333;
-      border-radius: 6px; color: #eee; font-size: 14px;
+      width: 80%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      text-align: center;
+      font-size: 1em;
     }
+
     button {
-      background: #aaff00; color: #000; font-weight: bold;
-      border: none; border-radius: 6px; padding: 8px 12px;
-      margin-top: 10px; cursor: pointer;
+      display: block;
+      margin: 20px auto;
+      padding: 10px 30px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1em;
+      cursor: pointer;
+      background-color: #4af3ff;
+      color: black;
+      transition: background-color 0.3s;
     }
-    button:hover { background: #d9ff4d; }
-    .result { margin-top: 10px; font-weight: bold; color: #aaff00; }
-    .eff-bar { width:100%; height:20px; background:#111; border-radius:10px; overflow:hidden; margin-top:8px;}
-    .eff-fill { height:100%; width:0%; background:#aaff00; transition:width .5s ease; }
-    #chartContainer { margin-top: 25px; background: #0b0b0b; border-radius: 10px; padding: 10px; }
-    footer { text-align:center; margin-top:20px; color:#aaa; font-size:0.9rem; }
+
+    button:hover {
+      background-color: #2ad4ff;
+    }
+
+    #result, #efficiencyResult {
+      text-align: center;
+      font-size: 1.3em;
+      margin-top: 15px;
+      color: #4af3ff;
+    }
+
+    canvas {
+      display: block;
+      margin: 30px auto;
+      max-width: 700px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      font-size: 0.9em;
+    }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Oakridge Nuclear Power Plant Calculators</h1>
+    <p>Demand & Reactor Efficiency Calculations</p>
+  </header>
+
   <div class="container">
-    <h1>Oakridge Utility Suite</h1>
-
     <h2>Demand Calculator</h2>
-    <label>Demand Number:</label>
-    <input id="demandInput" type="number" placeholder="e.g. 1190">
-    <button onclick="calcDemand()">Calculate Demand</button>
-    <div id="demandResult" class="result"></div>
-
-    <h2>Paycheck System</h2>
-    <label>Hours Worked:</label>
-    <input id="hoursInput" type="number" placeholder="e.g. 8">
-    <label>Rate Per Hour:</label>
-    <input id="rateInput" type="number" placeholder="e.g. 10">
-    <button onclick="calcPay()">Calculate Paycheck</button>
-    <div id="payResult" class="result"></div>
-
-    <h2>Reactor Efficiency Calculator</h2>
-    <label>Reactor Power (P):</label>
-    <input id="P_input" type="number" placeholder="e.g. 1800">
-    <label>Core Temperature (C):</label>
-    <input id="C_input" type="number" placeholder="e.g. 3200">
-    <label>Plant Output (O):</label>
-    <input id="O_input" type="number" placeholder="e.g. 1050">
-    <button onclick="calcEfficiency()">Calculate Efficiency & Plot Graph</button>
-    <div id="effResult" class="result"></div>
-    <div class="eff-bar"><div class="eff-fill" id="effFill"></div></div>
-    <div id="chartContainer"><canvas id="effChart" height="240"></canvas></div>
-
-    <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
+    <label for="number">Enter Demand Number:</label>
+    <input type="number" id="number" placeholder="Enter number..." />
+    <button onclick="calculateDemand()">Calculate Demand</button>
+    <div id="result"></div>
   </div>
 
+  <div class="container">
+    <h2>Reactor Efficiency Calculator</h2>
+    <label for="power">Reactor Power (P):</label>
+    <input type="number" id="power" placeholder="e.g. 3000" />
+    <label for="core">Core Temp (C):</label>
+    <input type="number" id="core" placeholder="e.g. 3000" />
+    <label for="output">Plant Output (O):</label>
+    <input type="number" id="output" placeholder="e.g. 2000" />
+    <button onclick="calculateEfficiency()">Calculate Efficiency & Plot Graph</button>
+    <div id="result"></div>
+    <canvas id="effChart"></canvas>
+  </div>
+
+  <footer>
+    © 2025 | Made by 4_mighty_4 + sixhness
+  </footer>
+
   <script>
-    const ctx = document.getElementById('effChart');
-    const effChart = new Chart(ctx, {
-      type: 'line',
-      data: { labels: [], datasets: [{ label:'Efficiency', data:[], borderColor:'#aaff00', backgroundColor:'rgba(170,255,0,0.1)', fill:true, pointRadius:0 }] },
-      options: { scales:{ x:{ticks:{color:'#aaa'}}, y:{ticks:{color:'#aaa'}} }, plugins:{legend:{labels:{color:'#aaa'}}} }
-    });
-
-    function calcDemand(){
-      const d = parseFloat(demandInput.value);
-      if(isNaN(d)) return alert('Enter a valid number');
-      const result = d/2 + 12;
-      demandResult.textContent = `Demand Value = ${result.toFixed(2)}`;
-    }
-
-    function calcPay(){
-      const h = parseFloat(hoursInput.value);
-      const r = parseFloat(rateInput.value);
-      if(isNaN(h)||isNaN(r)) return alert('Enter valid numbers');
-      const pay = h*r;
-      payResult.textContent = `Total Paycheck = ${pay.toFixed(2)}`;
-    }
-
-    // --- Efficiency Calculations ---
-    function Pw(P){ return (2*P)/3; }
-    function Ow(O){ return (107*O)/100; }
-
-    // Smooth limiter that doesn't fully zero out below threshold
-    function PL(Pw){
-      const t=(Pw-1600)/500;
-      if(t>1) return 1;
-      if(t>0) return t; 
-      return Math.max(0.05 + t*0.05, 0.02); // smooth low end (~2%-5%)
-    }
-
-    function E(Ow,Pw,C){
-      const pl = PL(Pw);
-      if(Pw <= 1600 || C <= 0) return pl * 0.5;
-      const numerator = (65*(Ow/(Pw-1600))) + (35*(77*((Ow/4570)+0.65)/C));
-      return pl * numerator * 100; // multiplied to scale to %
-    }
-
-    function calcEfficiency(){
-      const P=parseFloat(P_input.value), C=parseFloat(C_input.value), O=parseFloat(O_input.value);
-      if(isNaN(P)||isNaN(C)||isNaN(O)) return alert('Enter valid P, C, and O');
-
-      const Pw_val=Pw(P), Ow_val=Ow(O);
-      const eff=E(Ow_val,Pw_val,C);
-      effResult.textContent=`Reactor Efficiency = ${eff.toFixed(3)}%`;
-      effFill.style.width=Math.min(100,eff)+"%";
-
-      // Plot graph
-      const data=[], labels=[];
-      for(let x=0;x<=O*1.2;x+=O/30){
-        const e=E(Ow(x),Pw_val,C);
-        data.push(e); labels.push(x.toFixed(0));
+    // Demand (Auto Bypass) Calculator
+    function calculateDemand() {
+      const number = parseFloat(document.getElementById('number').value);
+      if (isNaN(number)) {
+        document.getElementById('result').textContent = "Please enter a valid number.";
+        return;
       }
-      effChart.data.labels=labels;
-      effChart.data.datasets[0].data=data;
-      effChart.update();
+      const demand = (number / 2) + 12;
+      document.getElementById('result').textContent = `Demand: ${demand.toFixed(2)}`;
+    }
+
+    // Efficiency Calculations
+    function PL(Pw) {
+      const value = (Pw - 1600) / 500;
+      if (value < 0) return 0;
+      if (value > 1) return 1;
+      return value;
+    }
+
+    function E(Ow, Pw, C) {
+      const pl = PL(Pw);
+      if (Pw <= 1600 || C <= 0) return pl * 0.5;
+
+      const part1 = 65 * (Ow / (Pw - 1600));
+      const part2 = 35 * (77 * ((Ow / 4570) + 0.65) / C);
+      let eff = (part1 + part2) * pl;
+      eff = eff * 12000; // scaling constant for realism
+      return Math.max(0, Math.min(100, eff));
+    }
+
+    function calculateEfficiency() {
+      const P = parseFloat(document.getElementById('power').value);
+      const C = parseFloat(document.getElementById('core').value);
+      const O = parseFloat(document.getElementById('output').value);
+      if (isNaN(P) || isNaN(C) || isNaN(O)) {
+        document.getElementById('result').textContent = "Please fill all fields.";
+        return;
+      }
+
+      const Pw = (2 * P) / 3;
+      const Ow = (107 * O) / 100;
+
+      const efficiency = E(Ow, Pw, C);
+
+      document.getElementById('result').textContent =
+        `Efficiency: ${efficiency.toFixed(2)}%`;
+
+      const xValues = [];
+      const yValues = [];
+      for (let x = 0; x <= O; x += O / 30) {
+        const Owg = (107 * x) / 100;
+        const e = E(Owg, Pw, C);
+        xValues.push(x);
+        yValues.push(e);
+      }
+
+      let lineColor = 'red';
+      if (efficiency > 75) lineColor = 'green';
+      else if (efficiency > 40) lineColor = 'yellow';
+
+      const ctx = document.getElementById('effChart').getContext('2d');
+      if (window.effChartInstance) window.effChartInstance.destroy();
+      window.effChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: xValues,
+          datasets: [{
+            label: 'Efficiency (%)',
+            data: yValues,
+            borderColor: lineColor,
+            borderWidth: 3,
+            fill: true,
+            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+            pointRadius: 0,
+            tension: 0.2
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: 'Plant Output (O)' } },
+            y: { min: 0, max: 100, title: { display: true, text: 'Efficiency (%)' } }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+          }
+        }
+      });
     }
   </script>
 </body>
 </html>
-
