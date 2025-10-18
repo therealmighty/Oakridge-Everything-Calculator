@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oakridge Nuclear Power Plant Tools</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+      line-height: 1.5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #232323;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #aad400;
+    }
+    h2 {
+      margin-top: 30px;
+    }
+    .field {
+      margin: 16px 0;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.1em;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border: 2px solid #444;
+      border-radius: 4px;
+      background: #2a2a2a;
+      color: #e0e0e0;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 1em;
+      border: none;
+      border-radius: 4px;
+      background: #aad400;
+      color: #1a1a1a;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    button:hover {
+      background: #8bbc00;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 14px;
+      background: #2f2f2f;
+      border-1px solid #444;
+      border-radius: 4px;
+      font-size: 1.2em;
+      color: #aad400;
+      display: none;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #444;
+      margin: 40px 0;
+    }
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 0.9em;
+      color: #777;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Oakridge Nuclear Power Plant Tools</h1>
+
+    <section id="bypassSection">
+      <h2>Auto Bypass Calculator</h2>
+      <div class="field">
+        <label for="inputNumber">Enter bypass number:</label>
+        <input type="number" id="inputNumber" placeholder="e.g. 100">
+      </div>
+      <button id="calcBypassBtn">Calculate Bypass</button>
+      <div id="bypassResult" class="result"></div>
+    </section>
+
+    <hr>
+
+    <section id="paycheckSection">
+      <h2>Paycheck System</h2>
+      <div class="field">
+        <label for="inputHours">Enter your hours (or value):</label>
+        <input type="number" id="inputHours" placeholder="e.g. 8">
+      </div>
+      <div class="field">
+        <label for="inputRate">Enter your rate per hour:</label>
+        <input type="number" id="inputRate" placeholder="e.g. 10">
+      </div>
+      <button id="calcPaycheckBtn">Calculate Paycheck</button>
+      <div id="paycheckResult" class="result"></div>
+    </section>
+
+    <footer>
+      Made by MightyBlakemcawesome and Q_bott.
+    </footer>
+  </div>
+
+  <script>
+    // Auto bypass calculation
+    document.getElementById('calcBypassBtn').addEventListener('click', function(){
+      const numInput = document.getElementById('inputNumber').value;
+      const num = parseFloat(numInput);
+      if (isNaN(num)) {
+        alert('Please enter a valid number for the bypass calculation.');
+        return;
+      }
+      const bypass = (num / 2) + 12;
+      const resultDiv = document.getElementById('bypassResult');
+      resultDiv.style.display = 'block';
+      resultDiv.innerText = 'Auto Bypass Value = ' + bypass.toFixed(2);
+    });
+
+    // Paycheck calculation
+    document.getElementById('calcPaycheckBtn').addEventListener('click', function(){
+      const hoursInput = document.getElementById('inputHours').value;
+      const rateInput  = document.getElementById('inputRate').value;
+      const hours = parseFloat(hoursInput);
+      const rate  = parseFloat(rateInput);
+      if (isNaN(hours) || isNaN(rate)) {
+        alert('Please enter valid values for hours and rate.');
+        return;
+      }
+      const paycheck = hours * rate;
+      const resultDiv = document.getElementById('paycheckResult');
+      resultDiv.style.display = 'block';
+      resultDiv.innerText = 'Paycheck = ' + paycheck.toFixed(2);
+    });
+  </script>
+</body>
+</html>
