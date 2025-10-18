@@ -5,445 +5,140 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Oakridge Systems | Demand · Paycheck · Efficiency</title>
 
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    /* Parallax background */
-    :root {
-      --accent: #c7ff1f;
-      --accent-dark: #a8ff00;
-      --panel-bg: rgba(0,0,0,0.82);
-    }
-
-    html,body { height: 100%; margin: 0; }
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      color: #eee;
       background: url("https://i.ibb.co/N2Jq1f9Z/image.png") center/cover fixed no-repeat;
-      color: #ddd;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 36px 20px;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      padding: 30px;
+      min-height: 100vh;
     }
-
     .container {
-      width: 100%;
-      max-width: 920px;
-      background: var(--panel-bg);
-      border-radius: 14px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.7);
-      border: 1px solid rgba(255,255,255,0.03);
-      padding: 26px;
-      backdrop-filter: blur(6px) saturate(120%);
-      position: relative;
-      z-index: 2;
+      width: 95%;
+      max-width: 950px;
+      background: rgba(0, 0, 0, 0.85);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      backdrop-filter: blur(6px);
     }
-
-    h1 { margin: 0 0 12px 0; color: var(--accent); text-align: center; }
-    h2 { color: var(--accent); margin: 14px 0 8px; text-align: left; font-size: 1.15rem; }
-
-    /* form elements */
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
+    h1 { color: #aaff00; text-align: center; margin-bottom: 20px; }
+    h2 { color: #aaff00; margin-top: 20px; font-size: 1.2rem; }
+    label { display: block; margin-top: 8px; }
+    input {
+      width: 100%; padding: 8px;
+      background: #111; border: 1px solid #333;
+      border-radius: 6px; color: #eee; font-size: 14px;
     }
-    .full { grid-column: 1 / -1; }
-
-    label {
-      display:block;
-      font-size: 0.95rem;
-      color: #ddd;
-      margin-bottom: 6px;
-    }
-
-    input[type="number"] {
-      width:100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      background: #181818;
-      border: 1px solid #333;
-      color: #eee;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-
     button {
-      display:inline-block;
-      padding: 10px 14px;
-      border-radius: 8px;
-      background: var(--accent-dark);
-      color: #000;
-      font-weight: 700;
-      border: none;
-      cursor:pointer;
-      transition: transform .12s ease, background .12s ease;
+      background: #aaff00; color: #000; font-weight: bold;
+      border: none; border-radius: 6px; padding: 8px 12px;
+      margin-top: 10px; cursor: pointer;
     }
-    button:hover { transform: translateY(-3px); background: #d9ff58; }
-
-    .result {
-      background: rgba(30,30,30,0.9);
-      border: 1px solid rgba(255,255,255,0.03);
-      padding: 10px 12px;
-      border-radius: 8px;
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .section {
-      margin-bottom: 22px;
-    }
-
-    .divider {
-      height:1px;
-      background: rgba(255,255,255,0.03);
-      margin: 20px 0;
-    }
-
-    /* efficiency bar */
-    .efficiency-bar {
-      width:100%;
-      height: 22px;
-      background: #0e0e0e;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.03);
-      margin-top:10px;
-    }
-    .efficiency-fill {
-      height:100%;
-      width:0%;
-      background: var(--accent-dark);
-      transition: width 700ms cubic-bezier(0.22,1,0.36,1);
-    }
-
-    /* Chart */
-    #chartWrap { margin-top: 18px; background:#0b0b0b; padding:14px; border-radius:10px; border:1px solid rgba(255,255,255,0.03); }
-    canvas { display:block; max-width:100%; }
-
-    footer {
-      text-align:center;
-      margin-top:20px;
-      color:#aaa;
-      font-size:0.9rem;
-    }
-
-    @media (max-width:820px) {
-      .grid { grid-template-columns: 1fr; }
-      .container { padding:18px; }
-    }
+    button:hover { background: #d9ff4d; }
+    .result { margin-top: 10px; font-weight: bold; color: #aaff00; }
+    .eff-bar { width:100%; height:20px; background:#111; border-radius:10px; overflow:hidden; margin-top:8px;}
+    .eff-fill { height:100%; width:0%; background:#aaff00; transition:width .5s ease; }
+    #chartContainer { margin-top: 25px; background: #0b0b0b; border-radius: 10px; padding: 10px; }
+    footer { text-align:center; margin-top:20px; color:#aaa; font-size:0.9rem; }
   </style>
 </head>
 <body>
-  <div class="container" role="main" aria-label="Oakridge Utility Suite">
+  <div class="container">
     <h1>Oakridge Utility Suite</h1>
 
-    <!-- Demand -->
-    <div class="section">
-      <h2>Demand Calculator</h2>
-      <div class="grid">
-        <div>
-          <label for="demandInput">Enter demand number</label>
-          <input id="demandInput" type="number" placeholder="e.g. 1190" />
-        </div>
-        <div style="align-self:end;">
-          <button id="calcDemandBtn">Calculate Demand</button>
-        </div>
+    <h2>Demand Calculator</h2>
+    <label>Demand Number:</label>
+    <input id="demandInput" type="number" placeholder="e.g. 1190">
+    <button onclick="calcDemand()">Calculate Demand</button>
+    <div id="demandResult" class="result"></div>
 
-        <div class="full">
-          <div id="demandResult" class="result" style="display:none;"></div>
-        </div>
-      </div>
-    </div>
+    <h2>Paycheck System</h2>
+    <label>Hours Worked:</label>
+    <input id="hoursInput" type="number" placeholder="e.g. 8">
+    <label>Rate Per Hour:</label>
+    <input id="rateInput" type="number" placeholder="e.g. 10">
+    <button onclick="calcPay()">Calculate Paycheck</button>
+    <div id="payResult" class="result"></div>
 
-    <div class="divider" aria-hidden="true"></div>
-
-    <!-- Paycheck -->
-    <div class="section">
-      <h2>Paycheck System</h2>
-      <div class="grid">
-        <div>
-          <label for="hoursInput">Enter your hours (or value)</label>
-          <input id="hoursInput" type="number" placeholder="e.g. 8" />
-        </div>
-        <div>
-          <label for="rateInput">Enter your rate per hour</label>
-          <input id="rateInput" type="number" placeholder="e.g. 10" />
-        </div>
-
-        <div class="full" style="display:flex; gap:12px; align-items:center;">
-          <button id="calcPayBtn">Calculate Paycheck</button>
-          <div id="payResult" class="result" style="display:none;"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="divider" aria-hidden="true"></div>
-
-    <!-- Efficiency -->
-    <div class="section">
-      <h2>Reactor Efficiency Calculator</h2>
-      <div class="grid">
-        <div>
-          <label for="P_input">Reactor Power (P)</label>
-          <input id="P_input" type="number" placeholder="Total Reactor Power (P)" />
-        </div>
-        <div>
-          <label for="C_input">Core Temperature (C)</label>
-          <input id="C_input" type="number" placeholder="Core Temperature (C)" />
-        </div>
-
-        <div>
-          <label for="O_input">Plant Output (O)</label>
-          <input id="O_input" type="number" placeholder="Plant Output (O)" />
-        </div>
-
-        <div style="align-self:end;">
-          <button id="updateEffBtn">Calculate Efficiency & Plot Graph</button>
-        </div>
-
-        <div class="full">
-          <div id="effResult" class="result" style="display:none;"></div>
-          <div class="efficiency-bar" aria-hidden="true">
-            <div id="effFill" class="efficiency-fill"></div>
-          </div>
-
-          <div id="chartWrap">
-            <canvas id="effChart" height="240" aria-label="Efficiency graph"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
+    <h2>Reactor Efficiency Calculator</h2>
+    <label>Reactor Power (P):</label>
+    <input id="P_input" type="number" placeholder="e.g. 1800">
+    <label>Core Temperature (C):</label>
+    <input id="C_input" type="number" placeholder="e.g. 3200">
+    <label>Plant Output (O):</label>
+    <input id="O_input" type="number" placeholder="e.g. 1050">
+    <button onclick="calcEfficiency()">Calculate Efficiency & Plot Graph</button>
+    <div id="effResult" class="result"></div>
+    <div class="eff-bar"><div class="eff-fill" id="effFill"></div></div>
+    <div id="chartContainer"><canvas id="effChart" height="240"></canvas></div>
 
     <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
   </div>
 
   <script>
-    /* -------------------------
-       Mathematical helpers
-       ------------------------- */
-
-    // Reactor weighted power: Pw = 2P/3
-    function Pw_from_P(P) {
-      return (2 * P) / 3;
-    }
-
-    // Plant output weighted: Ow = 107*O / 100
-    function Ow_from_O(O) {
-      return (107 * O) / 100;
-    }
-
-    // Reactor power limiter PL as piecewise:
-    // t = (Pw - 1600) / 500
-    // PL = 1 if t > 1
-    // PL = t if 0 <= t <= 1
-    // PL = 0 if t < 0
-    function PL_from_Pw(Pw) {
-      const t = (Pw - 1600) / 500;
-      if (t > 1) return 1;
-      if (t >= 0) return t;
-      return 0;
-    }
-
-    // Core efficiency formula for a given Ow and Pw and C:
-    // E = PL * ( 65 * (Ow / (Pw - 1600)) + 35 * ( 77 * (Ow/4570 + 0.65) / C ) )
-    // Note: caller must ensure Pw - 1600 != 0 and C != 0. We'll guard numerically.
-    function E_from_Ow_Pw_C(Ow, Pw, C) {
-      // guard Pw - 1600
-      const denom = Pw - 1600;
-      if (denom === 0 || C === 0) {
-        return NaN; // invalid - handled by caller
-      }
-      const PL = PL_from_Pw(Pw);
-      if (PL === 0) return 0;
-      const term1 = 65 * (Ow / denom);
-      const term2 = 35 * (77 * (Ow / 4570 + 0.65) / C);
-      const E = PL * (term1 + term2);
-      return E;
-    }
-
-    /* -------------------------
-       DOM bindings
-       ------------------------- */
-
-    const el = id => document.getElementById(id);
-
-    // Demand
-    el('calcDemandBtn').addEventListener('click', () => {
-      const raw = parseFloat(el('demandInput').value);
-      const out = el('demandResult');
-      if (Number.isNaN(raw)) {
-        out.style.display = 'block';
-        out.textContent = 'Please enter a valid demand number.';
-        return;
-      }
-      const demand = raw / 2 + 12;
-      out.style.display = 'block';
-      out.textContent = `Demand Value = ${demand.toFixed(2)}`;
-    });
-
-    // Paycheck
-    el('calcPayBtn').addEventListener('click', () => {
-      const hours = parseFloat(el('hoursInput').value);
-      const rate  = parseFloat(el('rateInput').value);
-      const out = el('payResult');
-      if (Number.isNaN(hours) || Number.isNaN(rate)) {
-        out.style.display = 'block';
-        out.textContent = 'Please enter valid hours and rate.';
-        return;
-      }
-      out.style.display = 'block';
-      out.textContent = `Total Paycheck = ${(hours * rate).toFixed(2)}`;
-    });
-
-    /* -------------------------
-       Chart.js setup
-       ------------------------- */
-    const ctx = document.getElementById('effChart').getContext('2d');
+    // Chart init
+    const ctx = document.getElementById('effChart');
     const effChart = new Chart(ctx, {
       type: 'line',
-      data: {
-        labels: [], // x values (plant output)
-        datasets: [{
-          label: 'Efficiency (%)',
-          data: [],
-          borderColor: 'rgba(168,255,0,0.95)',
-          backgroundColor: 'rgba(168,255,0,0.09)',
-          borderWidth: 2,
-          pointRadius: 0,
-          tension: 0.28,
-          fill: true,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: {
-            title: { display: true, text: 'Plant Output (x)' },
-            ticks: { color: '#bbb' },
-            grid: { color: 'rgba(255,255,255,0.03)' }
-          },
-          y: {
-            title: { display: true, text: 'Efficiency (%)' },
-            suggestedMin: 0,
-            suggestedMax: 140,
-            ticks: { color: '#bbb' },
-            grid: { color: 'rgba(255,255,255,0.03)' }
-          }
-        },
-        plugins: {
-          legend: { labels: { color: '#ddd' } },
-          tooltip: {
-            callbacks: {
-              label: ctx => ` ${ctx.parsed.y.toFixed(2)}%`
-            }
-          }
-        }
-      }
+      data: { labels: [], datasets: [{ label:'Efficiency', data:[], borderColor:'#aaff00', backgroundColor:'rgba(170,255,0,0.1)', fill:true, pointRadius:0 }] },
+      options: { scales:{ x:{ticks:{color:'#aaa'}}, y:{ticks:{color:'#aaa'}} }, plugins:{legend:{labels:{color:'#aaa'}}} }
     });
 
-    /* -------------------------
-       Efficiency calculation + graph
-       ------------------------- */
-
-    // animate the efficiency-fill bar width and set color
-    function setEffBar(percentage, color) {
-      const fill = el('effFill');
-      const clamped = Math.max(0, Math.min(100, percentage));
-      fill.style.width = clamped + '%';
-      fill.style.backgroundColor = color;
+    function calcDemand(){
+      const d = parseFloat(document.getElementById('demandInput').value);
+      if(isNaN(d)) return alert('Enter a valid number');
+      const result = d/2 + 12;
+      document.getElementById('demandResult').textContent = `Demand Value = ${result.toFixed(2)}`;
     }
 
-    function updateEfficiencyAndGraph() {
-      const P = parseFloat(el('P_input').value);
-      const C = parseFloat(el('C_input').value);
-      const O = parseFloat(el('O_input').value);
+    function calcPay(){
+      const h = parseFloat(document.getElementById('hoursInput').value);
+      const r = parseFloat(document.getElementById('rateInput').value);
+      if(isNaN(h)||isNaN(r)) return alert('Enter valid numbers');
+      const pay = h*r;
+      document.getElementById('payResult').textContent = `Total Paycheck = ${pay.toFixed(2)}`;
+    }
 
-      const out = el('effResult');
+    function Pw(P){ return (2*P)/3; }
+    function Ow(O){ return (107*O)/100; }
+    function PL(Pw){
+      const t=(Pw-1600)/500;
+      if(t>1) return 1;
+      if(t>=0) return t;
+      return 0;
+    }
+    function E(Ow,Pw,C){
+      const pl = PL(Pw);
+      if(Pw-1600===0||C===0) return 0;
+      return pl*(65*(Ow/(Pw-1600)) + 35*(77*((Ow/4570)+0.65)/C));
+    }
 
-      if (Number.isNaN(P) || Number.isNaN(C) || Number.isNaN(O)) {
-        out.style.display = 'block';
-        out.textContent = 'Please enter valid numbers for Reactor Power, Core Temp and Plant Output.';
-        // reset chart and bar
-        effChart.data.labels = [];
-        effChart.data.datasets[0].data = [];
-        effChart.update();
-        setEffBar(0, '#555');
-        return;
+    function calcEfficiency(){
+      const P=parseFloat(P_input.value), C=parseFloat(C_input.value), O=parseFloat(O_input.value);
+      if(isNaN(P)||isNaN(C)||isNaN(O)) return alert('Enter valid P, C, and O');
+
+      const Pw_val=Pw(P), Ow_val=Ow(O);
+      const eff=E(Ow_val,Pw_val,C);
+      effResult.textContent=`Reactor Efficiency = ${eff.toFixed(3)}%`;
+      document.getElementById('effFill').style.width=Math.min(100,eff)+"%";
+
+      // Plot graph
+      const data=[], labels=[];
+      for(let x=0;x<=O*1.2;x+=O/30){
+        const e=E(Ow(x),Pw_val,C);
+        data.push(e); labels.push(x.toFixed(0));
       }
-
-      // compute Pw and Ow
-      const Pw = Pw_from_P(P);
-      const Ow = Ow_from_O(O);
-
-      // guard for Pw - 1600 and C
-      const denom = Pw - 1600;
-      if (denom === 0 || C === 0) {
-        out.style.display = 'block';
-        out.textContent = 'Invalid values: check Reactor Power or Core Temp (would cause division by zero).';
-        setEffBar(0, '#555');
-        return;
-      }
-
-      // compute single efficiency for the given O (using Ow)
-      const E = E_from_Ow_Pw_C(Ow, Pw, C);
-      const displayE = (Number.isNaN(E) ? 0 : E);
-      out.style.display = 'block';
-      out.textContent = `Reactor Efficiency = ${displayE.toFixed(4)}%`;
-
-      // color thresholds (based on actual E)
-      let color = '#a8ff00'; // green
-      if (displayE < 50) color = '#ff3b3b';
-      else if (displayE < 80) color = '#ffb400';
-
-      // set bar visually clamped between 0 and 100
-      setEffBar(displayE, color);
-
-      // Build graph: x from 0 to max( O, a little more ) with n points
-      const maxX = Math.max( Math.max(100, O), Math.ceil(O * 1.05) );
-      const points = 120; // smooth
-      const labels = [];
-      const data = [];
-
-      for (let i = 0; i <= points; i++) {
-        const x = (maxX) * (i / points);
-        const Ow_g = Ow_from_O(x);      // O_wg = 107 * x / 100
-        const Eg = ( (Pw - 1600) === 0 || C === 0 ) ? NaN : E_from_Ow_Pw_C(Ow_g, Pw, C);
-        labels.push(x.toFixed(0));
-        data.push( Number.isNaN(Eg) ? 0 : Eg );
-      }
-
-      // update chart y-range adaptively for better viewing
-      const maxVal = Math.max(...data, displayE, 100);
-      const suggestedMax = Math.ceil(Math.max(120, maxVal + 10));
-
-      effChart.options.scales.y.suggestedMax = suggestedMax;
-      effChart.data.labels = labels;
-      effChart.data.datasets[0].data = data;
+      effChart.data.labels=labels;
+      effChart.data.datasets[0].data=data;
       effChart.update();
     }
-
-    // wire the button
-    el('updateEffBtn').addEventListener('click', updateEfficiencyAndGraph);
-
-    // small convenience: press Enter in any efficiency input triggers update
-    ['P_input','C_input','O_input'].forEach(id => {
-      el(id).addEventListener('keydown', e => {
-        if (e.key === 'Enter') updateEfficiencyAndGraph();
-      });
-    });
-
-    // initial demo values (optional)
-    el('P_input').value = 1800;
-    el('C_input').value = 3200;
-    el('O_input').value = 1050;
-    // draw initial graph
-    updateEfficiencyAndGraph();
   </script>
 </body>
 </html>
-
