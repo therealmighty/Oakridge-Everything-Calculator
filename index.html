@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>oakridge calc site</title>
+  <title>Oakridge Systems | Calculator Suite</title>
 
   <style>
-    /* Full-page parallax background */
+    /* Parallax background */
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
@@ -19,7 +19,7 @@
       padding: 40px 20px;
     }
 
-    /* Transparent container overlay */
+    /* Transparent overlay container */
     .container {
       width: 100%;
       max-width: 700px;
@@ -33,7 +33,7 @@
       z-index: 2;
     }
 
-    h1, h2 {
+    h1, h2, h3 {
       text-align: center;
       margin-top: 0;
       color: #c7ff1f;
@@ -77,6 +77,28 @@
       border: 1px solid #333;
     }
 
+    .divider {
+      margin: 25px 0;
+      border: 1px solid #333;
+    }
+
+    .efficiency-bar {
+      width: 100%;
+      height: 25px;
+      background-color: #111;
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+      border: 1px solid #333;
+    }
+
+    .efficiency-fill {
+      height: 100%;
+      background-color: #a8ff00;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
     footer {
       text-align: center;
       margin-top: 30px;
@@ -88,15 +110,17 @@
 </head>
 <body>
   <div class="container">
-    <h1>Demand Calculator</h1>
+    <h1>Oakridge Utility Suite</h1>
+
+    <h2>Demand Calculator</h2>
     <label>Enter demand number:</label>
-    <input type="number" id="bypassInput" placeholder="e.g. 1190">
-    <button onclick="calculateBypass()">Calculate Demand</button>
-    <div id="bypassResult" class="result"></div>
+    <input type="number" id="demandInput" placeholder="e.g. 1190">
+    <button onclick="calculateDemand()">Calculate Demand</button>
+    <div id="demandResult" class="result"></div>
 
-    <hr style="margin: 25px 0; border: 1px solid #333;">
+    <hr class="divider">
 
-    <h2>Paycheck Calculator</h2>
+    <h2>Paycheck System</h2>
     <label>Enter your hours (or value):</label>
     <input type="number" id="hoursInput" placeholder="e.g. 8">
     <label>Enter your rate per hour:</label>
@@ -104,21 +128,35 @@
     <button onclick="calculatePaycheck()">Calculate Paycheck</button>
     <div id="paycheckResult" class="result"></div>
 
+    <hr class="divider">
+
+    <h2>Reactor Efficiency Calculator</h2>
+    <label>Enter Reactor Power (MW):</label>
+    <input type="number" id="reactorPower" placeholder="e.g. 1200">
+    <label>Enter Turbine Output (MW):</label>
+    <input type="number" id="turbineOutput" placeholder="e.g. 1050">
+    <button onclick="calculateEfficiency()">Calculate Efficiency</button>
+    <div id="efficiencyResult" class="result"></div>
+
+    <div class="efficiency-bar">
+      <div id="efficiencyFill" class="efficiency-fill"></div>
+    </div>
+
     <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
   </div>
 
   <script>
-    function calculateBypass() {
-      const input = parseFloat(document.getElementById("bypassInput").value);
-      const resultDiv = document.getElementById("bypassResult");
+    function calculateDemand() {
+      const input = parseFloat(document.getElementById("demandInput").value);
+      const resultDiv = document.getElementById("demandResult");
 
       if (isNaN(input)) {
         resultDiv.textContent = "Please enter a valid number.";
         return;
       }
 
-      const bypassValue = input * 0.51;
-      resultDiv.textContent = `Auto Bypass Value = ${bypassValue.toFixed(2)}`;
+      const demandValue = input / 2 + 12;
+      resultDiv.textContent = `Demand Value = ${demandValue.toFixed(2)}`;
     }
 
     function calculatePaycheck() {
@@ -134,7 +172,29 @@
       const paycheck = hours * rate;
       resultDiv.textContent = `Total Paycheck = ${paycheck.toFixed(2)}`;
     }
+
+    function calculateEfficiency() {
+      const reactorPower = parseFloat(document.getElementById("reactorPower").value);
+      const turbineOutput = parseFloat(document.getElementById("turbineOutput").value);
+      const resultDiv = document.getElementById("efficiencyResult");
+      const fillBar = document.getElementById("efficiencyFill");
+
+      if (isNaN(reactorPower) || isNaN(turbineOutput) || reactorPower === 0) {
+        resultDiv.textContent = "Please enter valid numbers.";
+        fillBar.style.width = "0%";
+        return;
+      }
+
+      const efficiency = (turbineOutput / reactorPower) * 100;
+      const clamped = Math.min(efficiency, 100);
+      resultDiv.textContent = `Reactor Efficiency = ${efficiency.toFixed(2)}%`;
+      fillBar.style.width = clamped + "%";
+
+      // Color feedback
+      if (efficiency < 50) fillBar.style.backgroundColor = "#ff3b3b";
+      else if (efficiency < 80) fillBar.style.backgroundColor = "#ffb400";
+      else fillBar.style.backgroundColor = "#a8ff00";
+    }
   </script>
 </body>
 </html>
-
