@@ -15,7 +15,7 @@
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: start;
       padding: 20px;
     }
     .container {
@@ -28,14 +28,15 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.7);
     }
     header {
-      background: url('https://via.placeholder.com/700x200?text=Oakridge+Nuclear+Power+Plant') center/cover no-repeat;
-      padding: 60px 20px;
+      /* Use one of your images as header background */
+      background: url('https://i.ibb.co/xt8Nx27x/image-2025-10-18-114854726.png') center/cover no-repeat;
+      padding: 80px 20px;
       text-align: center;
       color: #aad400;
       text-shadow: 0 2px 4px rgba(0,0,0,0.6);
     }
     header h1 {
-      font-size: 2.5em;
+      font-size: 2.8em;
       margin-bottom: 0.2em;
     }
     header p {
@@ -107,26 +108,20 @@
       from { opacity:0; transform: translateY(10px); }
       to   { opacity:1; transform: translateY(0); }
     }
-    .links-gallery {
+    .aside-image {
       text-align: center;
-      margin-: 30px 0;
+      margin: 40px 0;
     }
-    .links-gallery a {
-      display: inline-block;
-      margin: 10px;
+    .aside-image img {
+      width: 100%;
+      max-width: 300px;
       border: 2px solid #444;
-      border-radius: 6px;
-      overflow: hidden;
+      border-radius: 8px;
       transition: border-color 0.3s, transform 0.2s;
     }
-    .links-gallery a img {
-      display: block;
-      max-width: 150px;
-      height: auto;
-    }
-    .links-gallery a:hover {
+    .aside-image img:hover {
       border-color: #aad400;
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
     footer {
       text-align: center;
@@ -137,13 +132,13 @@
     }
     @media (max-width: 600px) {
       header {
-        padding: 40px 10px;
+        padding: 60px 10px;
       }
       button {
         width: 100%;
       }
-      .links-gallery a img {
-        max-width: 100px;
+      .aside-image img {
+        max-width: 100%;
       }
     }
   </style>
@@ -155,16 +150,6 @@
       <p>Utility panel for Auto Bypass & Paycheck calculation</p>
     </header>
     <main>
-      <!-- Insert your links gallery -->
-      <div class="links-gallery">
-        <a href="https://ibb.co/Mx5mFgCF" target="_blank">
-          <img src="https://i.ibb.co/xt8Nx27x/image-2025-10-18-114854726.png" alt="image-2025-10-18-114854726" border="0">
-        </a>
-        <a href="https://ibb.co/0y6LB1Ch" target="_blank">
-          <img src="https://i.ibb.co/N2Jq1f9Z/image.png" alt="image" border="0">
-        </a>
-      </div>
-
       <section id="bypassSection">
         <h2>Auto Bypass Calculator</h2>
         <div class="field">
@@ -181,13 +166,18 @@
           <label for="inputHours">Enter your hours (or value):</label>
           <input type="number" id="inputHours" placeholder="e.g. 8">
         </div>
-        <div the="field">
+        <div class="field">
           <label for="inputRate">Enter your rate per hour:</label>
           <input type="number" id="inputRate" placeholder="e.g. 10">
         </div>
         <button id="calcPaycheckBtn">Calculate Paycheck</button>
         <div id="paycheckResult" class="result"></div>
       </section>
+
+      <div class="aside-image">
+        <!-- Use the second image here -->
+        <img src="https://i.ibb.co/N2Jq1f9Z/image.png" alt="Decorative image">
+      </div>
     </main>
     <footer>
       Developed for the Oakridge community • © 2025
