@@ -109,14 +109,20 @@
   <script>
     function calcDemand() {
       const val = parseFloat(document.getElementById("demandInput").value);
-      if (isNaN(val)) return alert("Enter a valid number!");
+      if (isNaN(val)) {
+        alert("Enter a valid number!");
+        return;
+      }
       const result = (val / 2) + 12;
       document.getElementById("demandResult").textContent = `Demand: ${result.toFixed(2)}`;
     }
 
     function calcPay() {
       const min = parseFloat(document.getElementById("payInput").value);
-      if (isNaN(min)) return alert("Enter a valid number!");
+      if (isNaN(min)) {
+        alert("Enter a valid number!");
+        return;
+      }
       const pay = (min * 175).toFixed(2);
       document.getElementById("payResult").textContent = `Paycheck: $${pay}`;
     }
@@ -125,25 +131,31 @@
       const P = parseFloat(document.getElementById('power').value);
       const C = parseFloat(document.getElementById('core').value);
       const O = parseFloat(document.getElementById('output').value);
-      if (isNaN(P) || isNaN(C) || isNaN(O)) return alert("Enter all fields!");
+      if (isNaN(P) || isNaN(C) || isNaN(O)) {
+        alert("Enter all fields!");
+        return;
+      }
 
       const efficiency = getEfficiency(P, C, O);
       document.getElementById('effResult').textContent = `Efficiency: ${efficiency.toFixed(2)}%`;
 
       const ctx = document.getElementById('effChart').getContext('2d');
-      const labels = [], data = [];
+      const labels = [];
+      const data = [];
       for (let x = 0; x <= O * 2; x += O / 20 || 1) {
         labels.push(x.toFixed(0));
         data.push(getEfficiency(P, C, x));
       }
-      if (window.chartInstance) window.chartInstance.destroy();
+      if (window.chartInstance) {
+        window.chartInstance.destroy();
+      }
       window.chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels,
+          labels: labels,
           datasets: [{
             label: 'Efficiency (%)',
-            data,
+            data: data,
             borderColor: '#00ff66',
             backgroundColor: 'rgba(0,255,100,0.15)',
             fill: true,
@@ -155,17 +167,47 @@
         options: {
           responsive: true,
           scales: {
-            x: { title: { display: true, text: 'Plant Output (MW)' }, ticks: { color: '#aaffaa' }, grid: { color: '#00ff3311' } },
-            y: { title: { display: true, text: 'Efficiency (%)' }, min: 0, max: 100, ticks: { color: '#aaffaa' }, grid: { color: '#00ff3311' } }
+            x: {
+              title: {
+                display: true,
+                text: 'Plant Output (MW)'
+              },
+              ticks: {
+                color: '#aaffaa'
+              },
+              grid: {
+                color: '#00ff3311'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Efficiency (%)'
+              },
+              min: 0,
+              max: 100,
+              ticks: {
+                color: '#aaffaa'
+              },
+              grid: {
+                color: '#00ff3311'
+              }
+            }
           },
-          plugins: { legend: { display: false } }
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
         }
       });
     }
 
     // ⚙️ Balanced and realistic efficiency formula
     function getEfficiency(P, C, O) {
-      if (P <= 0 || C <= 0 || O <= 0) return 0;
+      if (P <= 0 || C <= 0 || O <= 0) {
+        return 0;
+      }
 
       const ratio = O / P;
       let efficiency = 100 * Math.exp(-Math.pow((ratio - 0.85) / 0.25, 2)); // bell curve
