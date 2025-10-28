@@ -19,7 +19,7 @@
 
     h1 {
       color: #8fffa1;
-      text-shadow: 0 0 3px #00ff66;
+      text-shadow: 0 0 2px #00ff66;
       margin-top: 30px;
     }
 
@@ -36,7 +36,7 @@
 
     h3 {
       color: #00ff99;
-      text-shadow: 0 0 10px #00ff66;
+      text-shadow: 0 0 6px #00ff66;
     }
 
     label {
@@ -85,7 +85,7 @@
       margin-top: 12px;
       font-size: 18px;
       color: #cfffcc;
-      text-shadow: 0 0 10px #00ff66;
+      text-shadow: 0 0 6px #00ff66;
     }
 
     canvas {
@@ -100,7 +100,7 @@
       margin: 25px 0;
       color: #8fffa1;
       font-weight: bold;
-      text-shadow: 0 0 10px #00ff66;
+      text-shadow: 0 0 6px #00ff66;
     }
 
     hr {
@@ -209,15 +209,17 @@
       });
     }
 
-    // Reactor efficiency model
+    // Updated efficiency formula
     function getEfficiency(P, C, O) {
-      if (P <= 0 || C <= 0 || O <= 0) return 0;
-      const ratio = O / P;
-      let efficiency = 100 * Math.exp(-Math.pow((ratio - 0.85) / 0.25, 2));
-      efficiency *= (C / 900);
-      return Math.max(0, Math.min(100, efficiency));
+      if (P <= 1600 || C <= 0 || O <= 0) return 0;
+
+      const term1 = 65 * (O / (P - 1600));
+      const term2 = 35 * ((77 * ((O / 4570) + 0.65)) / C);
+      let eff = term1 + term2;
+
+      // Scale to realistic range
+      return Math.max(0, Math.min(100, eff));
     }
   </script>
 </body>
 </html>
-
