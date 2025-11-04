@@ -19,7 +19,7 @@
 
     h1 {
       color: #8fffa1;
-      text-shadow: 0 0 2px #00ff66;
+      text-shadow: 0 0 3px #00ff66;
       margin-top: 30px;
     }
 
@@ -36,7 +36,7 @@
 
     h3 {
       color: #00ff99;
-      text-shadow: 0 0 6px #00ff66;
+      text-shadow: 0 0 10px #00ff66;
     }
 
     label {
@@ -85,7 +85,7 @@
       margin-top: 12px;
       font-size: 18px;
       color: #cfffcc;
-      text-shadow: 0 0 6px #00ff66;
+      text-shadow: 0 0 10px #00ff66;
     }
 
     canvas {
@@ -100,12 +100,24 @@
       margin: 25px 0;
       color: #8fffa1;
       font-weight: bold;
-      text-shadow: 0 0 6px #00ff66;
+      text-shadow: 0 0 10px #00ff66;
     }
 
     hr {
       border: 1px solid #00ff6644;
       margin: 25px 0;
+    }
+
+    .formula {
+      font-family: "Consolas", monospace;
+      background: rgba(0, 50, 0, 0.6);
+      border-radius: 8px;
+      padding: 10px;
+      margin: 10px auto 20px;
+      width: 90%;
+      color: #afffaf;
+      font-size: 15px;
+      box-shadow: inset 0 0 10px #00ff6622;
     }
   </style>
 </head>
@@ -128,12 +140,18 @@
     <hr>
 
     <h3>Reactor Efficiency Calculator</h3>
-    <label>Power (MW):</label>
-    <input id="power" type="number" placeholder="e.g. 3200">
-    <label>Core Temp (°C):</label>
-    <input id="core" type="number" placeholder="e.g. 850">
-    <label>Output (MW):</label>
-    <input id="output" type="number" placeholder="e.g. 2000">
+    <p style="color:#aaffaa;font-size:14px;">All values are in MW</p>
+    <div class="formula">
+      Efficiency = 65 × (O / (P − 1600)) + 35 × ((77 × (O / 4570 + 0.65)) / C)
+    </div>
+
+    <label>Reactor Power (MW):</label>
+    <input id="power" type="number" placeholder="e.g. 4350">
+    <label>Plant Output (MW):</label>
+    <input id="output" type="number" placeholder="e.g. 1433">
+    <label>Plant Usage (MW):</label>
+    <input id="core" type="number" placeholder="e.g. 50.34">
+
     <button onclick="calcEff()">Calculate Efficiency & Plot Graph</button>
     <div class="result" id="effResult"></div>
     <canvas id="effChart" width="400" height="250"></canvas>
@@ -212,13 +230,10 @@
     // Updated efficiency formula
     function getEfficiency(P, C, O) {
       if (P <= 1600 || C <= 0 || O <= 0) return 0;
-
-      const term1 = 65 * (O / (P - 1600));
-      const term2 = 35 * ((77 * ((O / 4570) + 0.65)) / C);
-      let eff = term1 + term2;
-
-      // Scale to realistic range
-      return Math.max(0, Math.min(100, eff));
+      const part1 = 65 * (O / (P - 1600));
+      const part2 = 35 * ((77 * ((O / 4570) + 0.65)) / C);
+      const efficiency = part1 + part2;
+      return Math.max(0, Math.min(100, efficiency));
     }
   </script>
 </body>
