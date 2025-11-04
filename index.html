@@ -87,16 +87,22 @@
       text-shadow: 0 0 10px #00ff66;
     }
 
-    footer {
-      margin: 25px 0;
-      color: #8fffa1;
-      font-weight: bold;
-      text-shadow: 0 0 10px #00ff66;
+    .slider {
+      width: 80%;
+      margin-top: 15px;
+      accent-color: #00ff66;
     }
 
     hr {
       border: 1px solid #00ff6644;
       margin: 25px 0;
+    }
+
+    footer {
+      margin: 25px 0;
+      color: #8fffa1;
+      font-weight: bold;
+      text-shadow: 0 0 10px #00ff66;
     }
   </style>
 </head>
@@ -104,38 +110,46 @@
   <h1>Oakridge Utility Calculator</h1>
 
   <div class="container">
+    <!-- Turbine / Demand Section -->
+    <h3>Turbine Calculator</h3>
+    <label for="demandSlider">Demand (MW):</label>
+    <input type="range" min="0" max="2000" value="0" id="demandSlider" class="slider" oninput="updateTurbine()">
+    <div class="result" id="demandValue">Demand: 0 MW</div>
+    <div class="result" id="turbineOutput">Turbine Output: 12.00 MW</div>
+
+    <hr>
+
+    <!-- Paycheck Calculator -->
     <h3>Paycheck Calculator</h3>
     <label>Minutes Worked:</label>
-    <input id="minutesWorked" type="number" placeholder="Enter minutes worked">
-    
+    <input id="payInput" type="number" placeholder="Enter minutes worked">
     <label>Rank:</label>
-    <select id="rank">
-      <option value="0">Visitor / Trainee (0%)</option>
-      <option value="10">Junior Operator (10%)</option>
-      <option value="35">Senior Operator (35%)</option>
-      <option value="70">Supervisor (70%)</option>
-      <option value="115">Shift Manager (115%)</option>
-      <option value="170">Plant Director (170%)</option>
-      <option value="210">NRC Inspector (210%)</option>
+    <select id="rankSelect">
+      <option value="1.0">Visitor / Trainee (0%)</option>
+      <option value="1.1">Junior Operator (10%)</option>
+      <option value="1.35">Senior Operator (35%)</option>
+      <option value="1.7">Supervisor (70%)</option>
+      <option value="2.15">Shift Manager (115%)</option>
+      <option value="2.7">Plant Director (170%)</option>
+      <option value="3.1">NRC Inspector (210%)</option>
     </select>
-
     <button onclick="calcPay()">Calculate Pay</button>
     <div class="result" id="payResult"></div>
 
     <hr>
 
+    <!-- Efficiency Calculator -->
     <h3>Reactor Efficiency Calculator</h3>
-    <p style="color:#aaffaa;">Formula:<br>(65 × (O / P − 1600) + 35 × (77 × (O / 4570 + 0.65) × C))</p>
-
+    <p style="font-size:14px; color:#aaffaa;">
+      Formula:<br>
+      (65 × (O / (P − 1600)) + 35 × (77 × (O / 4570 + 0.65) × C))
+    </p>
     <label>Reactor Power (MW):</label>
     <input id="power" type="number" placeholder="e.g. 4350">
-
     <label>Plant Output (MW):</label>
     <input id="output" type="number" placeholder="e.g. 1433">
-
     <label>Plant Usage (MW):</label>
-    <input id="usage" type="number" placeholder="e.g. 50.34">
-
+    <input id="core" type="number" placeholder="e.g. 50.34">
     <button onclick="calcEff()">Calculate Efficiency</button>
     <div class="result" id="effResult"></div>
   </div>
@@ -143,27 +157,33 @@
   <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
 
   <script>
-    // Paycheck calculator with rank multiplier
-    function calcPay() {
-      const minutes = parseFloat(document.getElementById("minutesWorked").value);
-      const rankBonus = parseFloat(document.getElementById("rank").value);
-      if (isNaN(minutes)) return alert("Enter a valid number of minutes!");
-
-      const basePay = minutes * 175;
-      const finalPay = basePay * (1 + rankBonus / 100);
-
-      document.getElementById("payResult").textContent = `Paycheck: $${finalPay.toFixed(2)} (${rankBonus}% bonus applied)`;
+    // Turbine Calculator
+    function updateTurbine() {
+      const demand = parseFloat(document.getElementById("demandSlider").value);
+      const result = (demand / 2) + 12;
+      document.getElementById("demandValue").textContent = `Demand: ${demand} MW`;
+      document.getElementById("turbineOutput").textContent = `Turbine Output: ${result.toFixed(2)} MW`;
     }
 
-    // New efficiency formula
-    function calcEff() {
-      const P = parseFloat(document.getElementById("power").value);
-      const O = parseFloat(document.getElementById("output").value);
-      const C = parseFloat(document.getElementById("usage").value);
-      if (isNaN(P) || isNaN(O) || isNaN(C)) return alert("Enter all fields!");
+    // Paycheck Calculator
+    function calcPay() {
+      const min = parseFloat(document.getElementById("payInput").value);
+      const rankBonus = parseFloat(document.getElementById("rankSelect").value);
+      if (isNaN(min)) return alert("Enter a valid number!");
+      const basePay = min * 175;
+      const pay = basePay * rankBonus;
+      document.getElementById("payResult").textContent = `Paycheck: $${pay.toFixed(2)}`;
+    }
 
-      const efficiency = (65 * (O / P - 1600)) + (35 * (77 * (O / 4570 + 0.65) * C));
-      document.getElementById("effResult").textContent = `Efficiency: ${efficiency.toFixed(2)}%`;
+    // Efficiency Calculator
+    function calcEff() {
+      const P = parseFloat(document.getElementById('power').value);
+      const O = parseFloat(document.getElementById('output').value);
+      const C = parseFloat(document.getElementById('core').value);
+      if (isNaN(P) || isNaN(C) || isNaN(O)) return alert("Enter all fields!");
+
+      const efficiency = (65 * (O / (P - 1600))) + (35 * (77 * (O / 4570 + 0.65) * C));
+      document.getElementById('effResult').textContent = `Efficiency: ${efficiency.toFixed(2)}%`;
     }
   </script>
 </body>
