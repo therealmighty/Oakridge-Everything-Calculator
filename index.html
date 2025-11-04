@@ -1,177 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oakridge Calculators</title>
-<style>
-  body {
-    font-family: "Segoe UI", sans-serif;
-    color: #eaffea;
-    text-align: center;
-    margin: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.95)),
-                url("https://i.ibb.co/N2Jq1f9Z/image.png") no-repeat center center fixed;
-    background-size: cover;
-    min-height: 100vh;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oakridge Utility Calculator</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      color: #eaffea;
+      text-align: center;
+      margin: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)),
+                  url("https://i.ibb.co/N2Jq1f9Z/image.png") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+    }
 
-  h1, h2 {
-    color: #00ff88;
-    text-shadow: 0 0 6px #00ff88;
-  }
+    h1 {
+      color: #8fffa1;
+      text-shadow: 0 0 3px #00ff66;
+      margin-top: 30px;
+    }
 
-  .calculator {
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid #00ff88;
-    border-radius: 12px;
-    width: 400px;
-    margin: 20px auto;
-    padding: 20px;
-    box-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
-  }
+    .container {
+      background-color: rgba(0, 30, 0, 0.85);
+      padding: 25px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 700px;
+      margin: 40px auto;
+      box-shadow: 0 0 30px #00ff66aa;
+      backdrop-filter: blur(3px);
+    }
 
-  label {
-    display: block;
-    margin-top: 10px;
-  }
+    h3 {
+      color: #00ff99;
+      text-shadow: 0 0 10px #00ff66;
+    }
 
-  input[type="number"], select {
-    width: 90%;
-    padding: 8px;
-    margin-top: 5px;
-    background: #1e1e1e;
-    border: 1px solid #00ff88;
-    color: #eaffea;
-    border-radius: 8px;
-    text-align: center;
-  }
+    label {
+      display: block;
+      margin-top: 12px;
+      color: #aaffaa;
+    }
 
-  input[type="range"] {
-    width: 90%;
-    margin-top: 10px;
-    accent-color: #00ff88;
-  }
+    input, select {
+      width: 80%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 8px;
+      text-align: center;
+      font-size: 16px;
+      background-color: rgba(0, 50, 0, 0.7);
+      color: #aaffaa;
+      box-shadow: inset 0 0 10px #00ff6644;
+    }
 
-  button {
-    background: #00ff88;
-    color: black;
-    border: none;
-    padding: 10px 20px;
-    margin-top: 15px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+    input::placeholder {
+      color: #88cc88;
+    }
 
-  button:hover {
-    background: #00cc6a;
-  }
+    button {
+      background-color: #00ff66;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 12px;
+      transition: 0.2s;
+      box-shadow: 0 0 10px #00ff66;
+    }
 
-  .result {
-    margin-top: 15px;
-    font-weight: bold;
-    font-size: 1.1em;
-    color: #aaffaa;
-  }
+    button:hover {
+      background-color: #66ff99;
+      box-shadow: 0 0 20px #00ff99;
+      transform: scale(1.05);
+    }
 
-  footer {
-    margin-top: 40px;
-    color: #00ff88;
-    text-shadow: 0 0 5px #00ff88;
-  }
-</style>
+    .result {
+      margin-top: 12px;
+      font-size: 18px;
+      color: #cfffcc;
+      text-shadow: 0 0 10px #00ff66;
+    }
+
+    footer {
+      margin: 25px 0;
+      color: #8fffa1;
+      font-weight: bold;
+      text-shadow: 0 0 10px #00ff66;
+    }
+
+    hr {
+      border: 1px solid #00ff6644;
+      margin: 25px 0;
+    }
+  </style>
 </head>
 <body>
+  <h1>Oakridge Utility Calculator</h1>
 
-<h1>Oakridge Calculators</h1>
+  <div class="container">
+    <h3>Paycheck Calculator</h3>
+    <label>Minutes Worked:</label>
+    <input id="minutesWorked" type="number" placeholder="Enter minutes worked">
+    
+    <label>Rank:</label>
+    <select id="rank">
+      <option value="0">Visitor / Trainee (0%)</option>
+      <option value="10">Junior Operator (10%)</option>
+      <option value="35">Senior Operator (35%)</option>
+      <option value="70">Supervisor (70%)</option>
+      <option value="115">Shift Manager (115%)</option>
+      <option value="170">Plant Director (170%)</option>
+      <option value="210">NRC Inspector (210%)</option>
+    </select>
 
-<!-- Paycheck Calculator -->
-<div class="calculator">
-  <h2>Paycheck Calculator</h2>
-  <label>Base Pay ($):</label>
-  <input type="number" id="basePay" value="1000">
+    <button onclick="calcPay()">Calculate Pay</button>
+    <div class="result" id="payResult"></div>
 
-  <label>Rank:</label>
-  <select id="rank">
-    <option value="0">Visitor / Trainee (0%)</option>
-    <option value="10">Junior Operator (10%)</option>
-    <option value="35">Senior Operator (35%)</option>
-    <option value="70">Supervisor (70%)</option>
-    <option value="115">Shift Manager (115%)</option>
-    <option value="170">Plant Director (170%)</option>
-    <option value="210">NRC Inspector (210%)</option>
-  </select>
+    <hr>
 
-  <button onclick="calculatePaycheck()">Calculate Paycheck</button>
-  <div class="result" id="payResult">Final Pay: —</div>
-</div>
+    <h3>Reactor Efficiency Calculator</h3>
+    <p style="color:#aaffaa;">Formula:<br>(65 × (O / P − 1600) + 35 × (77 × (O / 4570 + 0.65) × C))</p>
 
-<!-- Efficiency Calculator -->
-<div class="calculator">
-  <h2>Efficiency Calculator</h2>
-  <p style="font-size:0.9em; color:#9aff9a;">
-    Formula:<br>(65 × ((O / P) − 1600)) + 35 × (77 × ((O / 4570) + 0.65) × C)
-  </p>
+    <label>Reactor Power (MW):</label>
+    <input id="power" type="number" placeholder="e.g. 4350">
 
-  <label>Reactor Power (MW):</label>
-  <input type="number" id="reactorPower" value="4350">
+    <label>Plant Output (MW):</label>
+    <input id="output" type="number" placeholder="e.g. 1433">
 
-  <label>Plant Output (MW):</label>
-  <input type="number" id="plantOutput" value="1433">
+    <label>Plant Usage (MW):</label>
+    <input id="usage" type="number" placeholder="e.g. 50.34">
 
-  <label>Plant Usage (MW):</label>
-  <input type="number" id="plantUsage" value="50.34">
+    <button onclick="calcEff()">Calculate Efficiency</button>
+    <div class="result" id="effResult"></div>
+  </div>
 
-  <button onclick="calculateEfficiency()">Calculate Efficiency</button>
-  <div class="result" id="effResult">Efficiency: —</div>
-</div>
+  <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
 
-<!-- Turbine Calculator -->
-<div class="calculator">
-  <h2>Turbine Calculator</h2>
-  <label>Demand (MW):</label>
-  <input type="range" id="demandSlider" min="0" max="1500" step="0.1" value="0" oninput="updateDemandValue()">
-  <div id="demandValue">Demand: 0.0 MW</div>
+  <script>
+    // Paycheck calculator with rank multiplier
+    function calcPay() {
+      const minutes = parseFloat(document.getElementById("minutesWorked").value);
+      const rankBonus = parseFloat(document.getElementById("rank").value);
+      if (isNaN(minutes)) return alert("Enter a valid number of minutes!");
 
-  <button onclick="calculateTurbine()">Calculate Turbine Output</button>
-  <div class="result" id="turbineResult">Turbine Output: —</div>
-</div>
+      const basePay = minutes * 175;
+      const finalPay = basePay * (1 + rankBonus / 100);
 
-<footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
+      document.getElementById("payResult").textContent = `Paycheck: $${finalPay.toFixed(2)} (${rankBonus}% bonus applied)`;
+    }
 
-<script>
-function calculatePaycheck() {
-  const basePay = parseFloat(document.getElementById('basePay').value);
-  const rankBonus = parseFloat(document.getElementById('rank').value);
-  const totalPay = basePay + (basePay * rankBonus / 100);
-  document.getElementById('payResult').innerText = `Final Pay: $${totalPay.toFixed(2)}`;
-}
+    // New efficiency formula
+    function calcEff() {
+      const P = parseFloat(document.getElementById("power").value);
+      const O = parseFloat(document.getElementById("output").value);
+      const C = parseFloat(document.getElementById("usage").value);
+      if (isNaN(P) || isNaN(O) || isNaN(C)) return alert("Enter all fields!");
 
-function calculateEfficiency() {
-  const P = parseFloat(document.getElementById('reactorPower').value);
-  const O = parseFloat(document.getElementById('plantOutput').value);
-  const C = parseFloat(document.getElementById('plantUsage').value);
-
-  // Correct formula implementation:
-  const efficiency = (65 * ((O / P) - 1600)) + (35 * (77 * ((O / 4570) + 0.65) * C));
-
-  const formatted = isNaN(efficiency) ? "—" : `${efficiency.toFixed(2)}%`;
-  document.getElementById('effResult').innerText = `Efficiency: ${formatted}`;
-}
-
-function updateDemandValue() {
-  const demand = parseFloat(document.getElementById('demandSlider').value);
-  document.getElementById('demandValue').innerText = `Demand: ${demand.toFixed(1)} MW`;
-}
-
-function calculateTurbine() {
-  const demand = parseFloat(document.getElementById('demandSlider').value);
-  const output = demand / 2 + 12;
-  document.getElementById('turbineResult').innerText = `Turbine Output: ${output.toFixed(2)} MW`;
-}
-</script>
-
+      const efficiency = (65 * (O / P - 1600)) + (35 * (77 * (O / 4570 + 0.65) * C));
+      document.getElementById("effResult").textContent = `Efficiency: ${efficiency.toFixed(2)}%`;
+    }
+  </script>
 </body>
 </html>
