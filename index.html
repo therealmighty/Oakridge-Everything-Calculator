@@ -1,223 +1,225 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Oakridge Calculators</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oakridge Utility Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      color: #eaffea;
+      text-align: center;
+      margin: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)),
+                  url("https://i.ibb.co/N2Jq1f9Z/image.png") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+    }
 
-<!-- MathJax for pretty formulas -->
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    h1 {
+      color: #8fffa1;
+      text-shadow: 0 0 2px #00ff66;
+      margin-top: 30px;
+    }
 
-<style>
-  :root{
-    --green:#00ff66;
-    --panel-bg: rgba(0,30,0,0.85);
-    --muted:#aaffaa;
-    --result-bg: #2b2b00;
-    --yellow: #ffcc33;
-  }
-  html,body{height:100%;margin:0;font-family:"Segoe UI",sans-serif;background:
-    linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.4)),
-    url("https://i.ibb.co/N2Jq1f9Z/image.png") no-repeat center center fixed;background-size:cover;color:#eaffea}
-  .wrap{max-width:960px;margin:28px auto;padding:18px}
-  h1{text-align:center;color:#8fffa1;text-shadow:0 0 3px #00ff66;margin:8px 0 20px}
-  .card{background:var(--panel-bg);border-radius:10px;padding:22px;margin-bottom:30px;box-shadow:0 0 22px rgba(0,255,102,0.08);border:1px solid rgba(255,255,255,0.03)}
-  .title{color:var(--green);text-align:center;font-size:1.45rem;margin-bottom:6px}
-  .subtitle{color:#dfffe1;text-align:center;font-size:0.95rem;margin-bottom:14px}
-  .formula{background:rgba(0,50,0,0.6);padding:12px;border-radius:8px;color:#bfffbf;margin:10px auto 16px;max-width:760px;box-shadow: inset 0 0 8px rgba(0,255,102,0.06); font-family: "Times New Roman", Times, serif}
-  .inputs{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-  .field{width:100%;max-width:720px;margin:6px auto}
-  label{display:block;color:var(--muted);margin-bottom:6px;font-weight:600}
-  input[type=number], select{
-    width:100%;max-width:100%;padding:10px;border-radius:8px;border:none;background:rgba(0,50,0,0.7);color:var(--muted);box-shadow: inset 0 0 8px rgba(0,255,102,0.06);
-    font-size:15px;text-align:center;
-  }
-  .row{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:12px}
-  button.calc{background:var(--green);color:#022;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;box-shadow:0 0 10px rgba(0,255,102,0.12)}
-  .result-line{margin-top:18px;text-align:center;font-weight:700}
-  .result-badge{
-    display:inline-block;padding:6px 10px;border-radius:6px;background:var(--yellow);color:#222;font-weight:800;margin-left:8px;box-shadow:0 0 6px rgba(255,204,51,0.25)
-  }
-  .note{color:#bfffbf;text-align:center;margin-top:6px;font-size:0.92rem}
-  footer{color:#bfffbf;text-align:center;margin-top:18px;font-size:0.9rem}
-  /* responsive */
-  @media (max-width:720px){
-    .inputs{padding:0 6px}
-  }
-</style>
+    .container {
+      background-color: rgba(0, 30, 0, 0.85);
+      padding: 25px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 700px;
+      margin: 40px auto;
+      box-shadow: 0 0 30px #00ff66aa;
+      backdrop-filter: blur(3px);
+    }
+
+    h3 {
+      color: #00ff99;
+      text-shadow: 0 0 6px #00ff66;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      color: #aaffaa;
+    }
+
+    input {
+      width: 80%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 8px;
+      text-align: center;
+      font-size: 16px;
+      background-color: rgba(0, 50, 0, 0.7);
+      color: #aaffaa;
+      box-shadow: inset 0 0 10px #00ff6644;
+    }
+
+    input::placeholder {
+      color: #88cc88;
+    }
+
+    button {
+      background-color: #00ff66;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 12px;
+      transition: 0.2s;
+      box-shadow: 0 0 10px #00ff66;
+    }
+
+    button:hover {
+      background-color: #66ff99;
+      box-shadow: 0 0 20px #00ff99;
+      transform: scale(1.05);
+    }
+
+    .result {
+      margin-top: 12px;
+      font-size: 18px;
+      color: #cfffcc;
+      text-shadow: 0 0 6px #00ff66;
+    }
+
+    canvas {
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      margin-top: 20px;
+      padding: 8px;
+      box-shadow: inset 0 0 20px #00ff6633;
+    }
+
+    footer {
+      margin: 25px 0;
+      color: #8fffa1;
+      font-weight: bold;
+      text-shadow: 0 0 6px #00ff66;
+    }
+
+    hr {
+      border: 1px solid #00ff6644;
+      margin: 25px 0;
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Oakridge Utility Suite</h1>
+  <h1>Oakridge Utility Calculator</h1>
 
-    <!-- Efficiency Card -->
-    <section class="card" id="effCard" aria-labelledby="effTitle">
-      <div id="effTitle" class="title">Efficiency Calculator</div>
-      <div class="subtitle">The formula for efficiency is:</div>
+  <div class="container">
+    <h3>Demand Calculator</h3>
+    <input id="demandInput" type="number" placeholder="Enter demand value">
+    <button onclick="calcDemand()">Calculate Demand</button>
+    <div class="result" id="demandResult"></div>
 
-      <!-- formula rendered by MathJax -->
-      <div class="formula" id="effFormula">
-        \[
-          65\!\left(\frac{O}{P-1600}\right)\;+\;35\!\left(\frac{77\left(\frac{O}{4570}+0.65\right)}{C}\right)
-        \]
-      </div>
+    <hr>
 
-      <p class="note"><strong>All values are in MW</strong></p>
+    <h3>Paycheck Calculator</h3>
+    <input id="payInput" type="number" placeholder="Enter minutes worked">
+    <button onclick="calcPay()">Calculate Pay</button>
+    <div class="result" id="payResult"></div>
 
-      <div class="inputs" role="form" aria-label="Efficiency inputs">
-        <div class="field">
-          <label for="powerIn">Reactor Power (MW)</label>
-          <input id="powerIn" type="number" step="any" placeholder="e.g. 4350" />
-        </div>
+    <hr>
 
-        <div class="field">
-          <label for="outputIn">Plant Output (MW)</label>
-          <input id="outputIn" type="number" step="any" placeholder="e.g. 1433" />
-        </div>
-
-        <div class="field">
-          <label for="usageIn">Plant Usage (MW)</label>
-          <input id="usageIn" type="number" step="any" placeholder="e.g. 50.34" />
-        </div>
-      </div>
-
-      <div class="row">
-        <button class="calc" id="calcEffBtn">Calculate Efficiency</button>
-      </div>
-
-      <div class="result-line" id="effDisplayLine" aria-live="polite" style="display:none">
-        Efficiency Percentage: <span class="result-badge" id="effBadge">—</span> %
-      </div>
-    </section>
-
-    <!-- Paycheck Card -->
-    <section class="card" id="payCard" aria-labelledby="payTitle">
-      <div id="payTitle" class="title">Paycheck Points Calculator</div>
-      <div class="subtitle">Points = \(\dfrac{((\text{MW Sold}\times \text{Efficiency}\times 0.2)\times \text{Bonus})\times\left(\frac{\text{hours}\times14.00}{24}\right)}{2}\)</div>
-
-      <div class="formula" id="payFormula">
-        \[
-          \text{Points} = \frac{\big((\text{MW Sold}\times \text{Efficiency}\times 0.2)\times \text{Bonus}\big)\times\left(\dfrac{\text{hours}\times14.00}{24}\right)}{2}
-        \]
-      </div>
-
-      <div class="note">Enter values below. Efficiency should be the percentage (e.g. 99 for 99%).</div>
-
-      <div class="inputs" aria-label="Paycheck inputs">
-        <div class="field">
-          <label for="hoursIn">Hours Worked</label>
-          <input id="hoursIn" type="number" step="any" placeholder="e.g. 24" />
-        </div>
-
-        <div class="field">
-          <label for="mwSoldIn">Base MW Output (MW Sold)</label>
-          <input id="mwSoldIn" type="number" step="any" placeholder="e.g. 20536" />
-        </div>
-
-        <div class="field">
-          <label for="rankIn">Bonus Multiplier (Rank)</label>
-          <select id="rankIn">
-            <option value="0">Visitor / Trainee — 0%</option>
-            <option value="0.10">Junior Operator — 10%</option>
-            <option value="0.35">Senior Operator — 35%</option>
-            <option value="0.70">Supervisor — 70%</option>
-            <option value="1.15">Shift Manager — 115%</option>
-            <option value="1.70">Plant Director — 170%</option>
-            <option value="2.10" selected>NRC Inspector — 210%</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="efficiencyIn">Efficiency Rating (%)</label>
-          <input id="efficiencyIn" type="number" step="any" placeholder="e.g. 99" />
-        </div>
-      </div>
-
-      <div class="row">
-        <button class="calc" id="calcPayBtn">Calculate Points</button>
-      </div>
-
-      <div class="result-line" id="payDisplayLine" aria-live="polite" style="display:none">
-        Total Points: <span class="result-badge" id="payBadge">—</span> Points
-      </div>
-    </section>
-
-    <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
+    <h3>Reactor Efficiency Calculator</h3>
+    <label>Power (MW):</label>
+    <input id="power" type="number" placeholder="e.g. 3200">
+    <label>Core Temp (°C):</label>
+    <input id="core" type="number" placeholder="e.g. 850">
+    <label>Output (MW):</label>
+    <input id="output" type="number" placeholder="e.g. 2000">
+    <button onclick="calcEff()">Calculate Efficiency & Plot Graph</button>
+    <div class="result" id="effResult"></div>
+    <canvas id="effChart" width="400" height="250"></canvas>
   </div>
 
-<script>
-  // Utility
-  const $ = id => document.getElementById(id);
+  <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
 
-  // Efficiency calculation (exact formula from your screenshot)
-  function calcEfficiencyValue(P, O, C) {
-    // Validate denominators
-    if (P - 1600 === 0 || C === 0) return { error: "Division by zero (check P or C)." };
-    // Compute exactly as:
-    // 65 * (O / (P - 1600)) + 35 * ( (77 * (O/4570 + 0.65)) / C )
-    const part1 = 65 * (O / (P - 1600));
-    const part2 = 35 * ((77 * ((O / 4570) + 0.65)) / C);
-    const raw = part1 + part2;
-    return { value: raw };
-  }
-
-  // Hook buttons
-  $('calcEffBtn').addEventListener('click', () => {
-    const P = parseFloat($('powerIn').value);
-    const O = parseFloat($('outputIn').value);
-    const C = parseFloat($('usageIn').value);
-
-    if (Number.isNaN(P) || Number.isNaN(O) || Number.isNaN(C)) {
-      alert('Please fill all efficiency inputs (all in MW).');
-      return;
+  <script>
+    function calcDemand() {
+      const val = parseFloat(document.getElementById("demandInput").value);
+      if (isNaN(val)) return alert("Enter a valid number!");
+      const result = (val / 2) + 12;
+      document.getElementById("demandResult").textContent = `Demand: ${result.toFixed(2)}`;
     }
 
-    const res = calcEfficiencyValue(P, O, C);
-    if (res.error) {
-      alert(res.error);
-      return;
+    function calcPay() {
+      const min = parseFloat(document.getElementById("payInput").value);
+      if (isNaN(min)) return alert("Enter a valid number!");
+      const pay = (min * 175).toFixed(2);
+      document.getElementById("payResult").textContent = `Paycheck: $${pay}`;
     }
 
-    const eff = res.value; // numeric percentage-like value
-    // show as number with two decimals; we won't clamp (to match your screenshot behavior)
-    $('effBadge').textContent = eff.toFixed(2);
-    $('effDisplayLine').style.display = 'block';
+    function calcEff() {
+      const P = parseFloat(document.getElementById('power').value);
+      const C = parseFloat(document.getElementById('core').value);
+      const O = parseFloat(document.getElementById('output').value);
+      if (isNaN(P) || isNaN(C) || isNaN(O)) return alert("Enter all fields!");
 
-    // also populate the efficiency field in the paycheck card for convenience
-    $('efficiencyIn').value = eff.toFixed(2);
-  });
+      const efficiency = getEfficiency(P, C, O);
+      document.getElementById('effResult').textContent = `Efficiency: ${efficiency.toFixed(2)}%`;
 
-  // Paycheck calc
-  $('calcPayBtn').addEventListener('click', () => {
-    const hours = parseFloat($('hoursIn').value);
-    const mwSold = parseFloat($('mwSoldIn').value);
-    const rankMult = parseFloat($('rankIn').value); // fractional (e.g. 0.10 for 10%)
-    const effPercent = parseFloat($('efficiencyIn').value);
+      const ctx = document.getElementById('effChart').getContext('2d');
+      const labels = [], data = [];
+      for (let x = 0; x <= O * 2; x += O / 20 || 1) {
+        labels.push(x.toFixed(0));
+        data.push(getEfficiency(P, C, x));
+      }
 
-    if (Number.isNaN(hours) || Number.isNaN(mwSold) || Number.isNaN(rankMult) || Number.isNaN(effPercent)) {
-      alert('Please fill all paycheck inputs.');
-      return;
+      if (window.chartInstance) window.chartInstance.destroy();
+      window.chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Efficiency (%)',
+            data,
+            borderColor: '#00ff66',
+            backgroundColor: 'rgba(0,255,100,0.15)',
+            fill: true,
+            tension: 0.25,
+            borderWidth: 2,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              title: { display: true, text: 'Plant Output (MW)', color: '#aaffaa' },
+              ticks: { color: '#aaffaa' },
+              grid: { color: '#00ff3311' }
+            },
+            y: {
+              title: { display: true, text: 'Efficiency (%)', color: '#aaffaa' },
+              min: 0,
+              max: 100,
+              ticks: { color: '#aaffaa' },
+              grid: { color: '#00ff3311' }
+            }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
     }
 
-    // Convert efficiency percentage to decimal fraction
-    const effFrac = effPercent / 100;
+    // Updated efficiency formula
+    function getEfficiency(P, C, O) {
+      if (P <= 1600 || C <= 0 || O <= 0) return 0;
 
-    // Formula: ((MW Sold × Efficiency × 0.2) × Bonus) × ((hours × 14.00) / 24) / 2
-    const base = (mwSold * effFrac * 0.2);
-    const withBonus = base * (1 + rankMult); // if rankMult=0.10, bonus = +10% -> multiplier 1.10
-    const hoursFactor = (hours * 14.00) / 24.0;
-    const points = (withBonus * hoursFactor) / 2.0;
+      const term1 = 65 * (O / (P - 1600));
+      const term2 = 35 * ((77 * ((O / 4570) + 0.65)) / C);
+      let eff = term1 + term2;
 
-    // show result nicely with comma separators
-    const formatted = points.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
-    $('payBadge').textContent = formatted;
-    $('payDisplayLine').style.display = 'block';
-  });
-
-  // render MathJax (ensure formulas show)
-  if (window.MathJax && MathJax.typesetPromise) {
-    MathJax.typesetPromise();
-  }
-</script>
+      // Scale to realistic range
+      return Math.max(0, Math.min(100, eff));
+    }
+  </script>
 </body>
 </html>
