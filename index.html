@@ -129,7 +129,7 @@
   <h1>Oakridge Utility Calculator</h1>
 
   <div class="container">
-    <h3>Demand Calculator</h3>
+    <h3>Demand Calculator <span style="color: #ffaa99; font-size: 12px;">(750 MW Max Output)</span></h3>
     <input id="demandInput" type="number" placeholder="Enter demand value (MWe)">
     <button onclick="calcDemand()">Calculate Demand</button>
     <div class="result" id="demandResult"></div>
@@ -153,7 +153,7 @@
 
     <hr>
 
-    <h3>Reactor Efficiency Calculator <span style="color: #ffaa99; font-size: 12px;">(750 MW Output Cap Applied)</span></h3>
+    <h3>Reactor Efficiency Calculator</h3>
     <p style="color:#aaffaa;font-size:14px;">All values are in MW</p>
     <div class="formula">
       Efficiency = 65 × (O / (P − 1600)) + 35 × ((77 × (O / 4570 + 0.65)) / C)
@@ -174,16 +174,23 @@
   <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
 
   <script>
-    // --- Constant for the Efficiency Cap ---
-    // The efficiency calculation uses 750 MW as the max Plant Output (O)
-    const EFFICIENCY_OUTPUT_CAP = 750; 
-    // ----------------------------------------
+    // --- Constant for the Turbine Output Cap ---
+    const TURBINE_OUTPUT_CAP = 750; 
+    // -------------------------------------------
 
     function calcDemand() {
       const val = parseFloat(document.getElementById("demandInput").value);
       if (isNaN(val)) return alert("Enter a valid number!");
-      const result = (val / 2) + 12;
-      document.getElementById("demandResult").textContent = `Demand: ${result.toFixed(2)}`;
+      
+      // 🛑 Applying the 750 MW cap to the input value for the demand calculator.
+      // If the user inputs a demand > 750, we cap it at 750 for the calculation.
+      const cappedVal = Math.min(val, TURBINE_OUTPUT_CAP);
+      
+      // Demand formula: (Demand / 2) + 12 (with extra efficiency)
+      const result = (cappedVal / 2) + 12; 
+      
+      document.getElementById("demandResult").textContent = 
+        `Demand: ${result.toFixed(2)} (Output capped at ${TURBINE_OUTPUT_CAP} MW)`;
     }
 
     function calcPay() {
@@ -209,11 +216,10 @@
       const ctx = document.getElementById('effChart').getContext('2d');
       const labels = [], data = [];
       
-      // Plotting loop: Iterate through a range of output (x) to see how efficiency changes
-      // The plot range is determined by the input O or the cap, whichever is higher, to show the full curve.
-      for (let x = 0; x <= Math.max(O * 1.5, EFFICIENCY_OUTPUT_CAP * 1.5); x += (O / 20 || 30)) {
+      // Plotting loop
+      for (let x = 0; x <= Math.max(O * 1.5, TURBINE_OUTPUT_CAP * 1.5); x += (O / 20 || 30)) {
         labels.push(x.toFixed(0));
-        data.push(getEfficiency(P, C, x)); // x is the Plant Output used in the plot
+        data.push(getEfficiency(P, C, x));
       }
 
       if (window.chartInstance) window.chartInstance.destroy();
@@ -253,29 +259,15 @@
       });
     }
 
-    /**
-     * Calculates the complex Oakridge Efficiency percentage (0-100%).
-     * P = Reactor Power (MWt)
-     * C = Plant Usage (MWe)
-     * O = Plant Output (MWe)
-     */
     function getEfficiency(P, C, O) {
       if (P <= 1600 || C <= 0 || O <= 0) return 0;
 
-      // Implements the 750 MW Output Cap for the calculation
-      const O_capped = Math.min(O, EFFICIENCY_OUTPUT_CAP);
+      const part1 = 65 * (O / (P - 1600)); 
       
-      // Part 1: 65 * (O / (P - 1600))
-      // Uses the capped O_capped value
-      const part1 = 65 * (O_capped / (P - 1600)); 
-      
-      // Part 2: 35 * ( ( 77 * ( (O / 4570) + 0.65 ) ) / C )
-      // Uses the capped O_capped value
-      const part2 = 35 * ( ( 77 * ( (O_capped / 4570) + 0.65 ) ) / C );
+      const part2 = 35 * ( ( 77 * ( (O / 4570) + 0.65 ) ) / C );
       
       const efficiency = part1 + part2;
       
-      // Clamp the result between 0 and 100
       return Math.max(0, Math.min(100, efficiency));
     }
   </script>
