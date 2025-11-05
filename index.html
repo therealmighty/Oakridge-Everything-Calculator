@@ -12,7 +12,7 @@
       text-align: center;
       margin: 0;
       background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)),
-                  url("https://i.ibb.co/N2Jq1f9Z/image.png") no-repeat center center fixed;
+        url("https://i.ibb.co/N2Jq1f9Z/image.png") no-repeat center center fixed;
       background-size: cover;
       min-height: 100vh;
     }
@@ -130,7 +130,7 @@
 
   <div class="container">
     <h3>Demand Calculator</h3>
-    <input id="demandInput" type="number" placeholder="Enter demand value">
+    <input id="demandInput" type="number" placeholder="Enter demand value (MWe)">
     <button onclick="calcDemand()">Calculate Demand</button>
     <div class="result" id="demandResult"></div>
 
@@ -153,17 +153,17 @@
 
     <hr>
 
-    <h3>Reactor Efficiency Calculator</h3>
+    <h3>Reactor Efficiency Calculator <span style="color: #ffaa99; font-size: 12px;">(750 MW Output Cap Applied)</span></h3>
     <p style="color:#aaffaa;font-size:14px;">All values are in MW</p>
     <div class="formula">
       Efficiency = 65 × (O / (P − 1600)) + 35 × ((77 × (O / 4570 + 0.65)) / C)
     </div>
 
-    <label>Reactor Power (MW):</label>
+    <label>Reactor Power (P, MWt):</label>
     <input id="power" type="number" placeholder="e.g. 4350">
-    <label>Plant Output (MW):</label>
+    <label>Plant Output (O, MWe):</label>
     <input id="output" type="number" placeholder="e.g. 1433">
-    <label>Plant Usage (MW):</label>
+    <label>Plant Usage (C, MWe):</label>
     <input id="core" type="number" placeholder="e.g. 50.34">
 
     <button onclick="calcEff()">Calculate Efficiency & Plot Graph</button>
@@ -174,6 +174,11 @@
   <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
 
   <script>
+    // --- Constant for the Efficiency Cap ---
+    // The efficiency calculation uses 750 MW as the max Plant Output (O)
+    const EFFICIENCY_OUTPUT_CAP = 750; 
+    // ----------------------------------------
+
     function calcDemand() {
       const val = parseFloat(document.getElementById("demandInput").value);
       if (isNaN(val)) return alert("Enter a valid number!");
@@ -192,9 +197,10 @@
     }
 
     function calcEff() {
-      const P = parseFloat(document.getElementById('power').value);
-      const C = parseFloat(document.getElementById('core').value);
-      const O = parseFloat(document.getElementById('output').value);
+      const P = parseFloat(document.getElementById('power').value); // Reactor Power
+      const C = parseFloat(document.getElementById('core').value);  // Plant Usage
+      const O = parseFloat(document.getElementById('output').value); // Plant Output
+
       if (isNaN(P) || isNaN(C) || isNaN(O)) return alert("Enter all fields!");
 
       const efficiency = getEfficiency(P, C, O);
@@ -202,9 +208,12 @@
 
       const ctx = document.getElementById('effChart').getContext('2d');
       const labels = [], data = [];
-      for (let x = 0; x <= O * 2; x += O / 20 || 1) {
+      
+      // Plotting loop: Iterate through a range of output (x) to see how efficiency changes
+      // The plot range is determined by the input O or the cap, whichever is higher, to show the full curve.
+      for (let x = 0; x <= Math.max(O * 1.5, EFFICIENCY_OUTPUT_CAP * 1.5); x += (O / 20 || 30)) {
         labels.push(x.toFixed(0));
-        data.push(getEfficiency(P, C, x));
+        data.push(getEfficiency(P, C, x)); // x is the Plant Output used in the plot
       }
 
       if (window.chartInstance) window.chartInstance.destroy();
@@ -244,11 +253,29 @@
       });
     }
 
+    /**
+     * Calculates the complex Oakridge Efficiency percentage (0-100%).
+     * P = Reactor Power (MWt)
+     * C = Plant Usage (MWe)
+     * O = Plant Output (MWe)
+     */
     function getEfficiency(P, C, O) {
       if (P <= 1600 || C <= 0 || O <= 0) return 0;
-      const part1 = 65 * (O / (P - 1600));
-      const part2 = 35 * ((77 * ((O / 4570) + 0.65)) / C);
+
+      // Implements the 750 MW Output Cap for the calculation
+      const O_capped = Math.min(O, EFFICIENCY_OUTPUT_CAP);
+      
+      // Part 1: 65 * (O / (P - 1600))
+      // Uses the capped O_capped value
+      const part1 = 65 * (O_capped / (P - 1600)); 
+      
+      // Part 2: 35 * ( ( 77 * ( (O / 4570) + 0.65 ) ) / C )
+      // Uses the capped O_capped value
+      const part2 = 35 * ( ( 77 * ( (O_capped / 4570) + 0.65 ) ) / C );
+      
       const efficiency = part1 + part2;
+      
+      // Clamp the result between 0 and 100
       return Math.max(0, Math.min(100, efficiency));
     }
   </script>
