@@ -170,11 +170,9 @@
   <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
 
   <script>
-    // TURBINE_OUTPUT_CAP constant is now unused
     const TURBINE_OUTPUT_CAP = 750; 
-    
-    // 🛑 LATEST SCALING FACTOR: Derived from your last test case (123.2 / 76.24 = 1.61582)
-    const EFFICIENCY_SCALING_FACTOR = 1.61582; 
+    const LINEAR_SLOPE = 0.742; // m
+    const LINEAR_INTERCEPT = 65.17; // b
 
     function calcDemand() {
       const val = parseFloat(document.getElementById("demandInput").value);
@@ -209,7 +207,6 @@
       const ctx = document.getElementById('effChart').getContext('2d');
       const labels = [], data = [];
       
-      // Plotting loop
       for (let x = 0; x <= O * 1.5; x += (O / 20 || 30)) {
         labels.push(x.toFixed(0));
         data.push(getEfficiency(P, C, x));
@@ -250,28 +247,13 @@
       });
     }
 
-    /**
-     * Calculates the complex Oakridge Efficiency percentage (scaled to match in-game output).
-     * P = Reactor Power (MWt)
-     * C = Plant Usage (MWe)
-     * O = Plant Output (MWe)
-     */
     function getEfficiency(P, C, O) {
       if (P <= 1600 || C <= 0 || O <= 0) return 0;
-      
-      // Part 1: 65 * (O / (P - 1600))
       const part1 = 65 * (O / (P - 1600)); 
-      
-      // Part 2: 35 * ( ( 77 * ( (O / 4570) + 0.65 ) ) / C )
       const part2 = 35 * ( ( 77 * ( (O / 4570) + 0.65 ) ) / C );
-      
-      // Raw result of the complex formula
       const rawEfficiency = part1 + part2;
-      
-      // Apply the scaling factor
-      const finalEfficiency = rawEfficiency * EFFICIENCY_SCALING_FACTOR;
-      
-      return finalEfficiency; 
+      const finalEfficiency = (rawEfficiency * LINEAR_SLOPE) + LINEAR_INTERCEPT;
+      return Math.max(0, finalEfficiency); 
     }
   </script>
 </body>
