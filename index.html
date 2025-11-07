@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Oakridge Utility Calculator</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
@@ -92,14 +91,6 @@
       text-shadow: 0 0 10px #00ff66;
     }
 
-    canvas {
-      background-color: rgba(0, 0, 0, 0.4);
-      border-radius: 10px;
-      margin-top: 20px;
-      padding: 8px;
-      box-shadow: inset 0 0 20px #00ff6633;
-    }
-
     footer {
       margin: 25px 0;
       color: #8fffa1;
@@ -112,17 +103,7 @@
       margin: 25px 0;
     }
 
-    .formula {
-      font-family: "Consolas", monospace;
-      background: rgba(0, 50, 0, 0.6);
-      border-radius: 8px;
-      padding: 10px;
-      margin: 10px auto 20px;
-      width: 90%;
-      color: #afffaf;
-      font-size: 15px;
-      box-shadow: inset 0 0 10px #00ff6622;
-    }
+    /* Removed .formula styling as it's no longer used for the formula display */
   </style>
 </head>
 <body>
@@ -153,24 +134,24 @@
 
     <hr>
 
-    <h3>Reactor Efficiency Calculator</h3>
+    <h3>Efficiency Calculator</h3>
 
-    <label>Reactor Power (P, MWt):</label>
-    <input id="power" type="number" placeholder="e.g. 4150">
-    <label>Plant Output (O, MWe):</label>
-    <input id="output" type="number" placeholder="e.g. 1411">
-    <label>Plant Usage (C, MWe):</label>
-    <input id="core" type="number" placeholder="e.g. 66.72">
+    <input id="power" type="number" placeholder="Reactor Power (MWt)">
+    <input id="output" type="number" placeholder="Plant Output (MWe)">
+    <input id="core" type="number" placeholder="Plant Usage (MWe)">
 
-    <button onclick="calcEff()">Calculate Efficiency & Plot Graph</button>
+    <button onclick="calcEff()">Calculate Efficiency</button>
     <div class="result" id="effResult"></div>
-    <canvas id="effChart" width="400" height="250"></canvas>
   </div>
 
   <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
 
   <script>
+    // TURBINE_OUTPUT_CAP constant is now unused
     const TURBINE_OUTPUT_CAP = 750; 
+    
+    // NEW STABLE LINEAR CONSTANTS - as derived from your two data points.
+    // E_game = m * E_raw + b
     const LINEAR_SLOPE = 0.742; // m
     const LINEAR_INTERCEPT = 65.17; // b
 
@@ -203,56 +184,32 @@
 
       const efficiency = getEfficiency(P, C, O);
       document.getElementById('effResult').textContent = `Efficiency: ${efficiency.toFixed(2)}%`;
-
-      const ctx = document.getElementById('effChart').getContext('2d');
-      const labels = [], data = [];
       
-      for (let x = 0; x <= O * 1.5; x += (O / 20 || 30)) {
-        labels.push(x.toFixed(0));
-        data.push(getEfficiency(P, C, x));
-      }
-
-      if (window.chartInstance) window.chartInstance.destroy();
-      window.chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Efficiency (%)',
-            data,
-            borderColor: '#00ff66',
-            backgroundColor: 'rgba(0,255,100,0.15)',
-            fill: true,
-            tension: 0.25,
-            borderWidth: 2,
-            pointRadius: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            x: {
-              title: { display: true, text: 'Plant Output (MW)', color: '#aaffaa' },
-              ticks: { color: '#aaffaa' },
-              grid: { color: '#00ff3311' }
-            },
-            y: {
-              title: { display: true, text: 'Efficiency (%)', color: '#aaffaa' },
-              ticks: { color: '#aaffaa' },
-              grid: { color: '#00ff3311' }
-            }
-          },
-          plugins: { legend: { display: false } }
-        }
-      });
+      // Chart drawing logic removed
     }
 
+    /**
+     * Calculates the Oakridge Efficiency percentage, corrected by a stable linear transformation.
+     * P = Reactor Power (MWt)
+     * C = Plant Usage (MWe)
+     * O = Plant Output (MWe)
+     */
     function getEfficiency(P, C, O) {
       if (P <= 1600 || C <= 0 || O <= 0) return 0;
+      
+      // Part 1: 65 * (O / (P - 1600))
       const part1 = 65 * (O / (P - 1600)); 
+      
+      // Part 2: 35 * ( ( 77 * ( (O / 4570) + 0.65 ) ) / C )
       const part2 = 35 * ( ( 77 * ( (O / 4570) + 0.65 ) ) / C );
+      
+      // Raw result of the complex formula
       const rawEfficiency = part1 + part2;
+      
+      // FINAL FIX: Apply stable linear transformation: E_game = m * E_raw + b
       const finalEfficiency = (rawEfficiency * LINEAR_SLOPE) + LINEAR_INTERCEPT;
+      
+      // Ensure result is not negative (though highly unlikely with these numbers)
       return Math.max(0, finalEfficiency); 
     }
   </script>
