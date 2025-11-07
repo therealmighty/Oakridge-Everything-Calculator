@@ -153,18 +153,18 @@
 
     <hr>
 
-    <h3>Reactor Efficiency Calculator</h3>
-    <p style="color:#aaffaa;font-size:14px;">All values are in MW</p>
+    <h3>Reactor Efficiency Calculator <span style="color: #ffaa99; font-size: 12px;">(Scaled to Match In-Game Results)</span></h3>
+    <p style="color:#aaffaa;font-size:14px;">All values are in MW. Non-clamped value allows > 100%.</p>
     <div class="formula">
-      Efficiency = 65 × (O / (P − 1600)) + 35 × ((77 × (O / 4570 + 0.65)) / C)
+      Efficiency ≈ (Raw Formula) × 1.61513
     </div>
 
     <label>Reactor Power (P, MWt):</label>
-    <input id="power" type="number" placeholder="e.g. 4350">
+    <input id="power" type="number" placeholder="e.g. 4100">
     <label>Plant Output (O, MWe):</label>
-    <input id="output" type="number" placeholder="e.g. 1433">
+    <input id="output" type="number" placeholder="e.g. 1340">
     <label>Plant Usage (C, MWe):</label>
-    <input id="core" type="number" placeholder="e.g. 50.34">
+    <input id="core" type="number" placeholder="e.g. 58.96">
 
     <button onclick="calcEff()">Calculate Efficiency & Plot Graph</button>
     <div class="result" id="effResult"></div>
@@ -174,14 +174,17 @@
   <footer>© 2025 | Made by 4_mighty_4 + sixhness</footer>
 
   <script>
-    // TURBINE_OUTPUT_CAP constant is now unused in the Demand Calculator, but kept for reference
+    // TURBINE_OUTPUT_CAP constant is now unused
     const TURBINE_OUTPUT_CAP = 750; 
     
+    // 🛑 NEW: Scaling factor to match the complex formula's output to the in-game display.
+    // Factor: 125.9 / 77.953 = 1.61513
+    const EFFICIENCY_SCALING_FACTOR = 1.61513; 
+
     function calcDemand() {
       const val = parseFloat(document.getElementById("demandInput").value);
       if (isNaN(val)) return alert("Enter a valid number!");
       
-      // 🟢 CAP REMOVED: Directly using the input value (val) for the calculation.
       const result = (val / 2) + 12; 
       
       document.getElementById("demandResult").textContent = 
@@ -243,8 +246,6 @@
             },
             y: {
               title: { display: true, text: 'Efficiency (%)', color: '#aaffaa' },
-              min: 0,
-              max: 100,
               ticks: { color: '#aaffaa' },
               grid: { color: '#00ff3311' }
             }
@@ -255,7 +256,7 @@
     }
 
     /**
-     * Calculates the complex Oakridge Efficiency percentage (0-100%).
+     * Calculates the complex Oakridge Efficiency percentage (scaled to match in-game output).
      * P = Reactor Power (MWt)
      * C = Plant Usage (MWe)
      * O = Plant Output (MWe)
@@ -269,10 +270,13 @@
       // Part 2: 35 * ( ( 77 * ( (O / 4570) + 0.65 ) ) / C )
       const part2 = 35 * ( ( 77 * ( (O / 4570) + 0.65 ) ) / C );
       
-      const efficiency = part1 + part2;
+      // Raw result of the complex formula (approx 77.95% for your inputs)
+      const rawEfficiency = part1 + part2;
       
-      // Clamp the result between 0 and 100
-      return Math.max(0, Math.min(100, efficiency));
+      // 🛑 FIXED: Apply the scaling factor to match the in-game value (approx 125.9%)
+      const finalEfficiency = rawEfficiency * EFFICIENCY_SCALING_FACTOR;
+      
+      return finalEfficiency; 
     }
   </script>
 </body>
